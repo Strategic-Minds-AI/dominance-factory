@@ -18,6 +18,7 @@ import WebsiteLibrary from '@/pages/WebsiteLibrary';
 import SocialMediaLibrary from '@/pages/SocialMediaLibrary';
 import LaunchPad from '@/pages/LaunchPad';
 import SuperAgents from '@/pages/SuperAgents';
+import VisualEditor from '@/pages/VisualEditor';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
           <Route path="/launch" element={<LaunchPad />} />
           <Route path="/agents" element={<SuperAgents />} />
           <Route path="/packs" element={<PackReview />} />
+          <Route path="/editor" element={<VisualEditor />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
