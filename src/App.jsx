@@ -19,6 +19,7 @@ import SocialMediaLibrary from '@/pages/SocialMediaLibrary';
 import LaunchPad from '@/pages/LaunchPad';
 import SuperAgents from '@/pages/SuperAgents';
 import VisualEditor from '@/pages/VisualEditor';
+import DominanceShell from '@/pages/DominanceShell';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -60,6 +61,7 @@ const AuthenticatedApp = () => {
           <Route path="/agents" element={<SuperAgents />} />
           <Route path="/packs" element={<PackReview />} />
           <Route path="/editor" element={<VisualEditor />} />
+          <Route path="/dominance" element={<DominanceShell />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
