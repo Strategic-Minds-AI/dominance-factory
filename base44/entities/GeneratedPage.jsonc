@@ -22,6 +22,10 @@
       "type": "string",
       "title": "URL Slug"
     },
+    "composite_key": {
+      "type": "string",
+      "title": "Composite Key (website_id::location::service)"
+    },
     "html_content": {
       "type": "string",
       "title": "HTML Content"
