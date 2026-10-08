@@ -61,6 +61,18 @@ const SUB_TABS = [
     ],
     search: ["name", "connector_type"],
   },
+  {
+    id: "templates",
+    label: "System Templates",
+    entity: "SystemTemplate",
+    columns: [
+      { key: "name", label: "Name" },
+      { key: "template_type", label: "Type" },
+      { key: "status", label: "Status" },
+      { key: "file_url", label: "File", render: (r) => r.file_url ? <a href={r.file_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Download</a> : "—" },
+    ],
+    search: ["name", "template_type", "description"],
+  },
 ];
 
 export default function AIHubPanel() {

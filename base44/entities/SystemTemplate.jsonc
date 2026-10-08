@@ -1,0 +1,71 @@
+{
+  "name": "SystemTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Template Name"
+    },
+    "file_url": {
+      "type": "string",
+      "title": "File URL"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "marketplace",
+        "website_system",
+        "code_base",
+        "blueprint",
+        "cloud_browser",
+        "leads_system",
+        "portfolio",
+        "other"
+      ],
+      "default": "other"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "stored",
+        "deployed",
+        "archived"
+      ],
+      "default": "stored"
+    },
+    "tags": {
+      "type": "string",
+      "title": "Tags"
+    }
+  },
+  "required": [
+    "name",
+    "file_url"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
