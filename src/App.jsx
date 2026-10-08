@@ -12,6 +12,12 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import PackReview from '@/pages/PackReview';
+import AppLayout from '@/components/AppLayout';
+import Dashboard from '@/pages/Dashboard';
+import WebsiteLibrary from '@/pages/WebsiteLibrary';
+import SocialMediaLibrary from '@/pages/SocialMediaLibrary';
+import LaunchPad from '@/pages/LaunchPad';
+import SuperAgents from '@/pages/SuperAgents';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -45,8 +51,14 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/" element={<PackReview />} />
-        <Route path="/packs" element={<PackReview />} />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/websites" element={<WebsiteLibrary />} />
+          <Route path="/social" element={<SocialMediaLibrary />} />
+          <Route path="/launch" element={<LaunchPad />} />
+          <Route path="/agents" element={<SuperAgents />} />
+          <Route path="/packs" element={<PackReview />} />
+        </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

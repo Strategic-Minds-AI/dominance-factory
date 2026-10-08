@@ -1,0 +1,73 @@
+{
+  "name": "GeneratedPage",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string",
+      "title": "Campaign ID"
+    },
+    "website_id": {
+      "type": "string",
+      "title": "Website ID"
+    },
+    "location": {
+      "type": "string",
+      "title": "Location (City, State)"
+    },
+    "service": {
+      "type": "string",
+      "title": "Service / Topic"
+    },
+    "url_slug": {
+      "type": "string",
+      "title": "URL Slug"
+    },
+    "html_content": {
+      "type": "string",
+      "title": "HTML Content"
+    },
+    "compliance_score": {
+      "type": "number",
+      "default": 0
+    },
+    "compliance_notes": {
+      "type": "string",
+      "title": "Compliance Notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "generating",
+        "ready",
+        "published",
+        "failed"
+      ],
+      "default": "generating"
+    }
+  },
+  "required": [
+    "url_slug"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

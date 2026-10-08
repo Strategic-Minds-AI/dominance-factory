@@ -1,0 +1,90 @@
+{
+  "name": "Website",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Website Name"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "enum": [
+        "business",
+        "ecommerce",
+        "portfolio",
+        "blog",
+        "landing_page",
+        "restaurant",
+        "agency",
+        "saas",
+        "local_service",
+        "other"
+      ],
+      "default": "business"
+    },
+    "preview_html": {
+      "type": "string",
+      "title": "Preview HTML"
+    },
+    "preview_image_url": {
+      "type": "string",
+      "title": "Preview Image URL"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "draft",
+        "approved",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "source_pack_id": {
+      "type": "string",
+      "title": "Source Pack ID"
+    },
+    "url_pattern": {
+      "type": "string",
+      "title": "URL Pattern"
+    },
+    "programmatic_rules_applied": {
+      "type": "string",
+      "title": "Programmatic Rules Applied (JSON)"
+    },
+    "brand_tokens": {
+      "type": "string",
+      "title": "Brand Tokens (JSON)"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
