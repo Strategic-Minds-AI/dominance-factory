@@ -14,21 +14,33 @@ export default function PreviewPanel({ html, onSave, saving }) {
   const [view, setView] = useState("visual");
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between border-b border-border px-3 py-2 bg-background">
+    <div className="flex flex-col h-full bg-black">
+      <div className="flex items-center justify-between border-b border-neutral-800 px-3 py-2 bg-neutral-950">
         <div className="flex items-center gap-1">
           <Button
-            variant={view === "visual" ? "default" : "ghost"}
+            variant="ghost"
             size="sm"
             onClick={() => setView("visual")}
+            className={cn(
+              "text-sm",
+              view === "visual"
+                ? "bg-white text-black hover:bg-neutral-200"
+                : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+            )}
           >
             <Eye className="w-4 h-4" />
             Visual
           </Button>
           <Button
-            variant={view === "code" ? "default" : "ghost"}
+            variant="ghost"
             size="sm"
             onClick={() => setView("code")}
+            className={cn(
+              "text-sm",
+              view === "code"
+                ? "bg-white text-black hover:bg-neutral-200"
+                : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+            )}
           >
             <Code className="w-4 h-4" />
             Code
@@ -38,25 +50,40 @@ export default function PreviewPanel({ html, onSave, saving }) {
           {view === "visual" && (
             <>
               <Button
-                variant={device === "desktop" ? "default" : "ghost"}
+                variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className={cn(
+                  "h-8 w-8",
+                  device === "desktop"
+                    ? "bg-white text-black hover:bg-neutral-200"
+                    : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                )}
                 onClick={() => setDevice("desktop")}
               >
                 <Monitor className="w-4 h-4" />
               </Button>
               <Button
-                variant={device === "tablet" ? "default" : "ghost"}
+                variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className={cn(
+                  "h-8 w-8",
+                  device === "tablet"
+                    ? "bg-white text-black hover:bg-neutral-200"
+                    : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                )}
                 onClick={() => setDevice("tablet")}
               >
                 <Tablet className="w-4 h-4" />
               </Button>
               <Button
-                variant={device === "mobile" ? "default" : "ghost"}
+                variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className={cn(
+                  "h-8 w-8",
+                  device === "mobile"
+                    ? "bg-white text-black hover:bg-neutral-200"
+                    : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                )}
                 onClick={() => setDevice("mobile")}
               >
                 <Smartphone className="w-4 h-4" />
@@ -64,17 +91,23 @@ export default function PreviewPanel({ html, onSave, saving }) {
             </>
           )}
           {onSave && (
-            <Button variant="outline" size="sm" onClick={onSave} disabled={saving} className="ml-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onSave}
+              disabled={saving}
+              className="ml-2 border-neutral-700 bg-neutral-900 text-white hover:bg-neutral-800 hover:text-white"
+            >
               <Save className="w-4 h-4" />
               {saving ? "Saving..." : "Save"}
             </Button>
           )}
         </div>
       </div>
-      <div className="flex-1 overflow-auto bg-muted/30 p-4 flex justify-center">
+      <div className="flex-1 overflow-auto bg-neutral-900 p-4 flex justify-center">
         {view === "visual" ? (
           <div
-            className="bg-white rounded-md shadow-sm transition-all h-full"
+            className="bg-white rounded-md shadow-2xl transition-all h-full"
             style={{ width: deviceWidths[device], maxWidth: "100%" }}
           >
             <iframe
@@ -85,7 +118,7 @@ export default function PreviewPanel({ html, onSave, saving }) {
             />
           </div>
         ) : (
-          <pre className="w-full h-full overflow-auto text-xs font-mono bg-background rounded-md border border-border p-4 whitespace-pre-wrap">
+          <pre className="w-full h-full overflow-auto text-xs font-mono bg-neutral-950 text-neutral-300 rounded-md border border-neutral-800 p-4 whitespace-pre-wrap">
             {html}
           </pre>
         )}

@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import ChatPanel from "@/components/editor/ChatPanel";
 import PreviewPanel from "@/components/editor/PreviewPanel";
+import { Button } from "@/components/ui/button";
+import { Send, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const INITIAL_HTML = `<!DOCTYPE html>
@@ -21,24 +22,27 @@ body { display: flex; align-items: center; justify-content: center; min-height: 
 <body>
 <div class="placeholder">
   <h1>Visual Editor</h1>
-  <p>Use the chat to start building your page.</p>
+  <p>Type a command below to start building.</p>
 </div>
 </body>
 </html>`;
 
 export default function VisualEditor() {
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hey! I'm your visual editor assistant. Describe what you want to build and I'll create it in real-time. Try something like 'Create a landing page for a plumbing company in Austin'." },
+    { role: "assistant", content: "Describe what you want to build and I'll create it live." },
   ]);
   const [html, setHtml] = useState(INITIAL_HTML);
   const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState("");
   const [saving, setSaving] = useState(false);
+  const [lastResponse, setLastResponse] = useState("");
   const { toast } = useToast();
 
   const handleSend = useCallback(async (text) => {
     const newMessages = [...messages, { role: "user", content: text }];
     setMessages(newMessages);
     setLoading(true);
+    setInput("");
 
     try {
       const res = await base44.functions.invoke("chatEdit", {
@@ -52,8 +56,10 @@ export default function VisualEditor() {
       if (res.action === "edit" && res.html) {
         setHtml(res.html);
       }
+      setLastResponse(res.message);
       setMessages([...newMessages, { role: "assistant", content: res.message }]);
     } catch (e) {
+      setLastResponse(`Error: ${e.message}`);
       setMessages([...newMessages, { role: "assistant", content: `Error: ${e.message}` }]);
     } finally {
       setLoading(false);
@@ -79,25 +85,46 @@ export default function VisualEditor() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e?.preventDefault();
+    if (!input.trim() || loading) return;
+    handleSend(input.trim());
+  };
+
   return (
-    <div className="flex h-screen">
-      <div className="w-96 border-r border-border flex flex-col bg-background shrink-0">
-        <div className="border-b border-border px-4 py-3">
-          <h2 className="text-sm font-semibold">Chat Editor</h2>
-          <p className="text-xs text-muted-foreground">Powered by Vercel AI Gateway</p>
-        </div>
-        <div className="flex-1 overflow-hidden">
-          <ChatPanel messages={messages} loading={loading} onSend={handleSend} />
-        </div>
+    <div className="flex flex-col h-screen bg-black relative">
+      <div className="flex-1 overflow-hidden">
+        <PreviewPanel html={html} onSave={handleSave} saving={saving} />
       </div>
-      <div className="flex-1 flex flex-col min-w-0">
-        <div className="border-b border-border px-4 py-3">
-          <h2 className="text-sm font-semibold">Visual Editor</h2>
+
+      {lastResponse && !loading && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 max-w-2xl w-full px-4 pointer-events-none">
+          <div className="bg-neutral-900/95 text-neutral-200 rounded-lg px-4 py-2.5 text-sm border border-neutral-700 shadow-2xl">
+            {lastResponse}
+          </div>
         </div>
-        <div className="flex-1 overflow-hidden">
-          <PreviewPanel html={html} onSave={handleSave} saving={saving} />
+      )}
+
+      <form onSubmit={handleSubmit} className="border-t border-neutral-800 bg-neutral-950 p-3 shrink-0">
+        <div className="flex gap-2 items-center max-w-4xl mx-auto">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Describe what you want to build or change..."
+            disabled={loading}
+            className="flex-1 bg-neutral-900 text-white rounded-lg px-4 py-3 text-sm border border-neutral-700 focus:outline-none focus:border-neutral-500 placeholder:text-neutral-500 disabled:opacity-50"
+          />
+          <Button
+            type="submit"
+            size="icon"
+            disabled={loading || !input.trim()}
+            className="shrink-0 bg-white text-black hover:bg-neutral-200 h-11 w-11"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+          </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
