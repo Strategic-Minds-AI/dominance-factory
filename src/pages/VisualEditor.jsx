@@ -49,7 +49,9 @@ export default function VisualEditor() {
 
       if (res.error) throw new Error(res.error);
 
-      setHtml(res.html);
+      if (res.action === "edit" && res.html) {
+        setHtml(res.html);
+      }
       setMessages([...newMessages, { role: "assistant", content: res.message }]);
     } catch (e) {
       setMessages([...newMessages, { role: "assistant", content: `Error: ${e.message}` }]);

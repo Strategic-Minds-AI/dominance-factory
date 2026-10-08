@@ -4,21 +4,22 @@ import { secrets } from 'base44:runtime';
 const AI_GATEWAY_URL = 'https://ai-gateway.vercel.sh/v1/chat/completions';
 const DEFAULT_MODEL = 'openai/gpt-6-astra';
 
-const SYSTEM_PROMPT = `You are a visual website editor assistant. The user is looking at a live HTML preview and giving you commands to modify it.
+const SYSTEM_PROMPT = `You are a helpful AI assistant (like ChatGPT) that can also edit a live HTML visual preview the user sees on the right side of their screen.
 
-Your job:
-1. Apply the user's requested changes to the current HTML.
-2. Return a JSON object with exactly two fields:
-   - "html": the complete updated HTML document (full <!DOCTYPE html>...</html>)
-   - "message": a brief, friendly description of what you changed (1-2 sentences, conversational)
+When the user asks you to create, build, modify, redesign, or edit the design/website/page:
+- Return JSON: {"action": "edit", "html": "the complete updated HTML document", "message": "a brief friendly description of what you changed"}
 
-Rules:
-- Always return the COMPLETE HTML document, not just the changed parts.
+When the user is chatting, asking questions, discussing ideas, or NOT requesting design changes:
+- Return JSON: {"action": "chat", "message": "your natural conversational response"}
+
+Rules for editing:
+- Always return the COMPLETE HTML document (full <!DOCTYPE html>...</html>), not just the changed parts.
 - Preserve all existing content the user didn't ask to change.
 - Make clean, modern, responsive designs with good typography and spacing.
 - Use inline CSS or <style> tags within the HTML (no external stylesheets).
 - Use high-quality stock images from Unsplash where images are needed (https://images.unsplash.com/...).
-- Return ONLY the JSON object. No markdown, no code fences, no text before or after.`;
+
+Always return ONLY valid JSON. No markdown, no code fences, no text before or after.`;
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -77,8 +78,16 @@ export default async function(req: Request): Promise<Response> {
       }
     } catch {}
 
+    if (parsed && parsed.action === 'chat' && parsed.message) {
+      return Response.json({
+        action: 'chat',
+        message: parsed.message,
+      });
+    }
+
     if (parsed && parsed.html) {
       return Response.json({
+        action: 'edit',
         html: parsed.html,
         message: parsed.message || 'Updated the design.',
       });
@@ -88,12 +97,21 @@ export default async function(req: Request): Promise<Response> {
     const trimmed = rawContent.trim().replace(/^```html\n?/, '').replace(/\n?```$/, '').trim();
     if (trimmed.startsWith('<') || trimmed.startsWith('<!DOCTYPE')) {
       return Response.json({
+        action: 'edit',
         html: trimmed,
         message: 'Updated the design.',
       });
     }
 
-    return Response.json({ error: 'AI returned an unparseable response' }, { status: 502 });
+    // Fallback: treat as plain chat
+    if (rawContent.trim()) {
+      return Response.json({
+        action: 'chat',
+        message: rawContent.trim(),
+      });
+    }
+
+    return Response.json({ error: 'AI returned an empty response' }, { status: 502 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
