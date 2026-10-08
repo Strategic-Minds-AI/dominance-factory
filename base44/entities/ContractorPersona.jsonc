@@ -1,0 +1,83 @@
+{
+  "name": "ContractorPersona",
+  "type": "object",
+  "properties": {
+    "persona_id": {
+      "type": "string",
+      "title": "ID"
+    },
+    "name": {
+      "type": "string",
+      "title": "Person Name"
+    },
+    "household": {
+      "type": "string",
+      "title": "Household / Origin"
+    },
+    "starting_capital": {
+      "type": "number",
+      "title": "Starting Capital"
+    },
+    "tech_comfort": {
+      "type": "string",
+      "title": "Tech Comfort"
+    },
+    "risk_style": {
+      "type": "string",
+      "title": "Risk Style"
+    },
+    "primary_segment": {
+      "type": "string",
+      "title": "Primary Segment"
+    },
+    "adoption_probability": {
+      "type": "number",
+      "title": "Modeled Adoption Probability"
+    },
+    "traditional_admin_hours": {
+      "type": "number",
+      "title": "Traditional Admin Hours/Week"
+    },
+    "ai_hours": {
+      "type": "number",
+      "title": "AI Hours/Week"
+    },
+    "hours_saved": {
+      "type": "number",
+      "title": "Hours Saved/Week"
+    },
+    "stress_reduction": {
+      "type": "number",
+      "title": "Stress Reduction 1-10"
+    },
+    "recommended_first_adoption": {
+      "type": "string",
+      "title": "Recommended First Adoption"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

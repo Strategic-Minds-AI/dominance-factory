@@ -1,0 +1,100 @@
+{
+  "name": "ContractorTechOption",
+  "type": "object",
+  "properties": {
+    "step_id": {
+      "type": "string",
+      "title": "Step ID"
+    },
+    "phase": {
+      "type": "string",
+      "title": "Phase"
+    },
+    "step_name": {
+      "type": "string",
+      "title": "Step"
+    },
+    "option_number": {
+      "type": "number",
+      "title": "Option #"
+    },
+    "option_name": {
+      "type": "string",
+      "title": "Option"
+    },
+    "operating_method": {
+      "type": "string",
+      "title": "Operating Method"
+    },
+    "typical_tools": {
+      "type": "string",
+      "title": "Typical Tools / Pattern"
+    },
+    "setup_hours": {
+      "type": "number",
+      "title": "Setup Hours Mode"
+    },
+    "monthly_low": {
+      "type": "number",
+      "title": "Monthly Low"
+    },
+    "monthly_mode": {
+      "type": "number",
+      "title": "Monthly Mode"
+    },
+    "monthly_high": {
+      "type": "number",
+      "title": "Monthly High"
+    },
+    "time_reduction": {
+      "type": "number",
+      "title": "Possible Time Reduction"
+    },
+    "stress_effect": {
+      "type": "string",
+      "title": "Stress / Life Effect"
+    },
+    "adoption_likelihood": {
+      "type": "number",
+      "title": "Adoption Likelihood"
+    },
+    "primary_risk": {
+      "type": "string",
+      "title": "Primary Risk"
+    },
+    "best_when": {
+      "type": "string",
+      "title": "Best When"
+    },
+    "poor_fit_when": {
+      "type": "string",
+      "title": "Poor Fit When"
+    }
+  },
+  "required": [
+    "step_id",
+    "option_name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "ConnectorEntry",
+  "type": "object",
+  "properties": {
+    "connector_id": {
+      "type": "string",
+      "title": "ID"
+    },
+    "name": {
+      "type": "string",
+      "title": "Connector Name"
+    },
+    "connector_type": {
+      "type": "string",
+      "title": "Type"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "cataloged",
+        "authenticated",
+        "production_tested"
+      ],
+      "default": "cataloged"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "url": {
+      "type": "string",
+      "title": "URL"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

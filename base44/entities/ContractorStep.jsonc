@@ -1,0 +1,91 @@
+{
+  "name": "ContractorStep",
+  "type": "object",
+  "properties": {
+    "step_id": {
+      "type": "string",
+      "title": "Step ID"
+    },
+    "phase": {
+      "type": "string",
+      "title": "Life/Business Phase"
+    },
+    "sequence": {
+      "type": "number",
+      "title": "Sequence"
+    },
+    "frequency": {
+      "type": "string",
+      "title": "Frequency"
+    },
+    "trigger": {
+      "type": "string",
+      "title": "Trigger"
+    },
+    "owner": {
+      "type": "string",
+      "title": "Owner"
+    },
+    "necessity": {
+      "type": "number",
+      "title": "Necessity 1-5"
+    },
+    "traditional_action": {
+      "type": "string",
+      "title": "Traditional Action"
+    },
+    "ai_action": {
+      "type": "string",
+      "title": "AI-Enhanced Action"
+    },
+    "ai_tool_class": {
+      "type": "string",
+      "title": "AI Tool Class"
+    },
+    "traditional_time_mode": {
+      "type": "number",
+      "title": "Traditional Time Mode (Min)"
+    },
+    "ai_time_mode": {
+      "type": "number",
+      "title": "AI Time Mode (Min)"
+    },
+    "annual_time_saved": {
+      "type": "number",
+      "title": "Annual Time Saved (Hours)"
+    },
+    "annual_labor_value_saved": {
+      "type": "number",
+      "title": "Annual Labor Value Saved"
+    },
+    "human_approval_gate": {
+      "type": "string",
+      "title": "Human Approval Gate"
+    }
+  },
+  "required": [
+    "step_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

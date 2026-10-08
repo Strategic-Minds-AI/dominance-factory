@@ -1,0 +1,59 @@
+{
+  "name": "InfoCategory",
+  "type": "object",
+  "properties": {
+    "rank": {
+      "type": "number",
+      "title": "Rank"
+    },
+    "category_id": {
+      "type": "string",
+      "title": "Category ID"
+    },
+    "macro_category": {
+      "type": "string",
+      "title": "Macro Category"
+    },
+    "value_score": {
+      "type": "number",
+      "title": "Base Value Score"
+    },
+    "primary_users": {
+      "type": "string",
+      "title": "Primary Users"
+    },
+    "primary_outputs": {
+      "type": "string",
+      "title": "Primary Workbook Outputs"
+    },
+    "first_action": {
+      "type": "string",
+      "title": "First Recursive Research Action"
+    }
+  },
+  "required": [
+    "macro_category"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "SwarmGenerator",
+  "type": "object",
+  "properties": {
+    "generator_id": {
+      "type": "string",
+      "title": "ID"
+    },
+    "name": {
+      "type": "string",
+      "title": "Generator Name"
+    },
+    "pattern": {
+      "type": "string",
+      "title": "Pattern"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "governance": {
+      "type": "string",
+      "title": "Governance Rule"
+    },
+    "agent_roles": {
+      "type": "string",
+      "title": "Agent Roles (JSON)"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

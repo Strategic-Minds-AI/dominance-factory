@@ -1,0 +1,51 @@
+{
+  "name": "PromptEntry",
+  "type": "object",
+  "properties": {
+    "prompt_id": {
+      "type": "string",
+      "title": "ID"
+    },
+    "name": {
+      "type": "string",
+      "title": "Prompt Name"
+    },
+    "prompt_text": {
+      "type": "string",
+      "title": "Prompt Text"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category"
+    },
+    "use_case": {
+      "type": "string",
+      "title": "Use Case"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

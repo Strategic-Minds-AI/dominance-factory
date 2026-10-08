@@ -1,0 +1,47 @@
+{
+  "name": "ProblemPattern",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "title": "Domain"
+    },
+    "pattern": {
+      "type": "string",
+      "title": "Problem Pattern"
+    },
+    "definition": {
+      "type": "string",
+      "title": "Definition"
+    },
+    "core_metrics": {
+      "type": "string",
+      "title": "Core Metrics"
+    }
+  },
+  "required": [
+    "pattern"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

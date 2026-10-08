@@ -1,0 +1,55 @@
+{
+  "name": "WorkflowPack",
+  "type": "object",
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "title": "ID"
+    },
+    "name": {
+      "type": "string",
+      "title": "Workflow Name"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "state_machine": {
+      "type": "string",
+      "title": "State Machine (JSON)"
+    },
+    "evidence_type": {
+      "type": "string",
+      "title": "Evidence Type"
+    },
+    "human_gate": {
+      "type": "string",
+      "title": "Human Gate"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "BuyerPersona",
+  "type": "object",
+  "properties": {
+    "persona": {
+      "type": "string",
+      "title": "Persona"
+    },
+    "segments": {
+      "type": "string",
+      "title": "Typical Segments"
+    },
+    "channels": {
+      "type": "string",
+      "title": "Where They Hang Out"
+    },
+    "language": {
+      "type": "string",
+      "title": "Language / Search Terms"
+    }
+  },
+  "required": [
+    "persona"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

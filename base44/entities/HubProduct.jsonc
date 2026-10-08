@@ -1,0 +1,80 @@
+{
+  "name": "HubProduct",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "title": "Catalog ID"
+    },
+    "name": {
+      "type": "string",
+      "title": "Product Name"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "unbenchmarked",
+        "benchmarking",
+        "benchmarked",
+        "released"
+      ],
+      "default": "unbenchmarked"
+    },
+    "value_score": {
+      "type": "number",
+      "default": 0
+    },
+    "build_speed": {
+      "type": "number",
+      "default": 0
+    },
+    "recurring": {
+      "type": "number",
+      "default": 0
+    },
+    "margin": {
+      "type": "number",
+      "default": 0
+    },
+    "strategic_fit": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

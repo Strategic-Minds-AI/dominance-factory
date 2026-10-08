@@ -1,0 +1,59 @@
+{
+  "name": "DiscoveryMethod",
+  "type": "object",
+  "properties": {
+    "method_number": {
+      "type": "number",
+      "title": "Number"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category"
+    },
+    "method": {
+      "type": "string",
+      "title": "Method"
+    },
+    "what_to_look_for": {
+      "type": "string",
+      "title": "What To Look For"
+    },
+    "how_it_becomes_money": {
+      "type": "string",
+      "title": "How It Becomes Money"
+    },
+    "automation_pattern": {
+      "type": "string",
+      "title": "Automation Pattern"
+    },
+    "cadence": {
+      "type": "string",
+      "title": "Cadence"
+    }
+  },
+  "required": [
+    "method"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "DemandTheme",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "title": "Domain"
+    },
+    "theme": {
+      "type": "string",
+      "title": "Demand Theme"
+    },
+    "why_signal": {
+      "type": "string",
+      "title": "Why It Is High-Signal"
+    },
+    "buyer": {
+      "type": "string",
+      "title": "Buyer"
+    },
+    "product_form": {
+      "type": "string",
+      "title": "Product Form"
+    }
+  },
+  "required": [
+    "theme"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

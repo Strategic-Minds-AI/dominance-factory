@@ -1,0 +1,136 @@
+{
+  "name": "Opportunity",
+  "type": "object",
+  "properties": {
+    "opportunity_id": {
+      "type": "string",
+      "title": "ID"
+    },
+    "title": {
+      "type": "string",
+      "title": "Title"
+    },
+    "problem": {
+      "type": "string",
+      "title": "Problem"
+    },
+    "buyer": {
+      "type": "string",
+      "title": "Buyer"
+    },
+    "primary_source": {
+      "type": "string",
+      "title": "Primary Source"
+    },
+    "evidence_url": {
+      "type": "string",
+      "title": "Evidence URL"
+    },
+    "pain_severity": {
+      "type": "number",
+      "default": 0
+    },
+    "frequency": {
+      "type": "number",
+      "default": 0
+    },
+    "demand_growth": {
+      "type": "number",
+      "default": 0
+    },
+    "purchase_intent": {
+      "type": "number",
+      "default": 0
+    },
+    "budget": {
+      "type": "number",
+      "default": 0
+    },
+    "reachability": {
+      "type": "number",
+      "default": 0
+    },
+    "competition_gap": {
+      "type": "number",
+      "default": 0
+    },
+    "automation": {
+      "type": "number",
+      "default": 0
+    },
+    "build_speed": {
+      "type": "number",
+      "default": 0
+    },
+    "margin": {
+      "type": "number",
+      "default": 0
+    },
+    "recurring": {
+      "type": "number",
+      "default": 0
+    },
+    "strategic_fit": {
+      "type": "number",
+      "default": 0
+    },
+    "evidence_confidence": {
+      "type": "number",
+      "default": 0
+    },
+    "risk_penalty": {
+      "type": "number",
+      "default": 0
+    },
+    "weighted_score": {
+      "type": "number",
+      "default": 0
+    },
+    "gate": {
+      "type": "string",
+      "enum": [
+        "open",
+        "approved",
+        "blocked",
+        "rejected"
+      ],
+      "default": "open"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "discovered",
+        "validated",
+        "scoring",
+        "queued",
+        "launched"
+      ],
+      "default": "discovered"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
