@@ -1,0 +1,88 @@
+{
+  "name": "Pack",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Pack Name"
+    },
+    "kind": {
+      "type": "string",
+      "title": "Pack Kind",
+      "enum": [
+        "web_pack",
+        "social_pack",
+        "content_pack",
+        "other"
+      ],
+      "default": "web_pack"
+    },
+    "preview_html": {
+      "type": "string",
+      "title": "Preview HTML"
+    },
+    "brand_tokens": {
+      "type": "string",
+      "title": "Brand Tokens (JSON string)"
+    },
+    "source": {
+      "type": "string",
+      "title": "Source",
+      "default": "gpt_sync"
+    },
+    "submitted_by_label": {
+      "type": "string",
+      "title": "Submitted By",
+      "default": "GPT"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "published"
+      ],
+      "default": "pending_review"
+    },
+    "review_notes": {
+      "type": "string",
+      "title": "Review Notes"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "title": "Reviewed At",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "string",
+      "title": "Metadata (JSON string)"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
