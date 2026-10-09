@@ -34,6 +34,10 @@ import IndustryIntelligence from '@/pages/IndustryIntelligence';
 import SeoDominanceStrategy from '@/pages/SeoDominanceStrategy';
 import GodModeSeo from '@/pages/GodModeSeo';
 import DigitalDominance from '@/pages/DigitalDominance';
+import AutonomousResearchEngine from '@/pages/AutonomousResearchEngine';
+import SocialMediaAutomation from '@/pages/SocialMediaAutomation';
+import ABTesting from '@/pages/ABTesting';
+import Analytics from '@/pages/Analytics';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -75,6 +79,10 @@ const AuthenticatedApp = () => {
           <Route path="/onboarding" element={<OnboardingPipeline />} />
           <Route path="/god-mode" element={<GodModeSeo />} />
           <Route path="/digital-dominance" element={<DigitalDominance />} />
+          <Route path="/research-engine" element={<AutonomousResearchEngine />} />
+          <Route path="/social-automation" element={<SocialMediaAutomation />} />
+          <Route path="/ab-testing" element={<ABTesting />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/websites" element={<WebsiteLibrary />} />
           <Route path="/social" element={<SocialMediaLibrary />} />

@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Sparkles, BarChart3, Crown, PlayCircle, Palette, Package, Rocket, Zap, Globe, Share2, Server, BookOpen, LayoutDashboard, Bot, Brain, Send, Image as ImageIcon, Command, Webhook } from "lucide-react";
+import { Sparkles, BarChart3, Crown, PlayCircle, Palette, Package, Rocket, Zap, Globe, Share2, Server, BookOpen, LayoutDashboard, Bot, Brain, Send, Image as ImageIcon, Command, Webhook, FlaskConical, Activity, Cpu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navGroups = [
@@ -11,12 +11,13 @@ const navGroups = [
       { step: 2, label: "God Mode SEO Optimizer", path: "/god-mode", icon: Zap },
       { step: 3, label: "SEO Dominance Strategy", path: "/seo-strategy", icon: Crown },
       { step: 4, label: "Digital Dominance", path: "/digital-dominance", icon: Globe },
+      { step: 5, label: "Name & URL Generator", path: "/", icon: Sparkles },
+      { label: "Autonomous Research Engine", path: "/research-engine", icon: Cpu },
     ],
   },
   {
-    label: "Phase 2 — Name & Setup",
+    label: "Phase 2 — Setup & Onboarding",
     items: [
-      { step: 5, label: "Name & URL Generator", path: "/", icon: Sparkles },
       { step: 6, label: "Onboarding Pipeline", path: "/onboarding", icon: PlayCircle },
     ],
   },
@@ -31,7 +32,7 @@ const navGroups = [
   {
     label: "Phase 4 — Distribution & Deployment",
     items: [
-      { step: 10, label: "Social Media", path: "/social", icon: Share2 },
+      { step: 10, label: "Social Media Automation", path: "/social-automation", icon: Share2 },
       { step: 11, label: "Provisioning & Domains", path: "/provisioning", icon: Server },
       { step: 12, label: "System Contents", path: "/contents", icon: BookOpen },
     ],
@@ -40,6 +41,8 @@ const navGroups = [
     label: "Operations",
     items: [
       { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+      { label: "Analytics", path: "/analytics", icon: Activity },
+      { label: "A/B Testing", path: "/ab-testing", icon: FlaskConical },
       { label: "Website Library", path: "/websites", icon: Globe },
       { label: "Super Agents", path: "/agents", icon: Bot },
       { label: "Intelligence Hub", path: "/intelligence", icon: Brain },

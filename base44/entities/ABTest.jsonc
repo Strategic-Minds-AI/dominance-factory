@@ -1,0 +1,119 @@
+{
+  "name": "ABTest",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Test Name"
+    },
+    "test_type": {
+      "type": "string",
+      "enum": [
+        "headline",
+        "cta",
+        "layout",
+        "content",
+        "image",
+        "video",
+        "pricing",
+        "form"
+      ],
+      "title": "Test Type"
+    },
+    "variant_a": {
+      "type": "string",
+      "title": "Variant A Description"
+    },
+    "variant_b": {
+      "type": "string",
+      "title": "Variant B Description"
+    },
+    "metric": {
+      "type": "string",
+      "title": "Success Metric"
+    },
+    "variant_a_visitors": {
+      "type": "number",
+      "default": 0,
+      "title": "Variant A Visitors"
+    },
+    "variant_b_visitors": {
+      "type": "number",
+      "default": 0,
+      "title": "Variant B Visitors"
+    },
+    "variant_a_conversions": {
+      "type": "number",
+      "default": 0,
+      "title": "Variant A Conversions"
+    },
+    "variant_b_conversions": {
+      "type": "number",
+      "default": 0,
+      "title": "Variant B Conversions"
+    },
+    "winner": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "variant_a",
+        "variant_b",
+        "tie"
+      ],
+      "default": "pending"
+    },
+    "confidence": {
+      "type": "number",
+      "default": 0,
+      "title": "Confidence (%)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "running",
+        "completed",
+        "stopped"
+      ],
+      "default": "draft"
+    },
+    "website_id": {
+      "type": "string",
+      "title": "Linked Website ID"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name",
+    "test_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

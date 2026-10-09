@@ -1,0 +1,93 @@
+{
+  "name": "ResearchStrategy",
+  "type": "object",
+  "properties": {
+    "industry": {
+      "type": "string",
+      "title": "Industry"
+    },
+    "strategy_name": {
+      "type": "string",
+      "title": "Strategy Name"
+    },
+    "strategy_rank": {
+      "type": "number",
+      "title": "Rank (1-10)"
+    },
+    "roi_estimate": {
+      "type": "string",
+      "title": "ROI Estimate"
+    },
+    "monthly_revenue": {
+      "type": "number",
+      "title": "Monthly Revenue ($)"
+    },
+    "monthly_cost": {
+      "type": "number",
+      "title": "Monthly Cost ($)"
+    },
+    "net_profit": {
+      "type": "number",
+      "title": "Net Monthly Profit ($)"
+    },
+    "time_to_profitability": {
+      "type": "string",
+      "title": "Time to Profitability"
+    },
+    "website_count": {
+      "type": "number",
+      "title": "Website Count"
+    },
+    "what_included": {
+      "type": "string",
+      "title": "What's Included (JSON)"
+    },
+    "steps": {
+      "type": "string",
+      "title": "Steps (JSON)"
+    },
+    "agents": {
+      "type": "string",
+      "title": "Agents (JSON)"
+    },
+    "full_strategy": {
+      "type": "string",
+      "title": "Full Strategy Details"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "selected",
+        "archived"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "industry",
+    "strategy_name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
