@@ -31,34 +31,34 @@ export default function EntityDataTable({ entityName, columns, searchFields, tit
   return (
     <div>
       <div className="flex items-center justify-between mb-4 gap-4">
-        <h3 className="text-lg font-semibold shrink-0">{title}</h3>
+        <h3 className="text-lg font-semibold text-white shrink-0">{title}</h3>
         <div className="relative w-64 shrink-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
-            className="pl-9"
+            className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-blue-500"
           />
         </div>
       </div>
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+          <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
         </div>
       ) : records.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+        <div className="flex flex-col items-center justify-center py-16 text-gray-500">
           <Database className="w-10 h-10 mb-3 opacity-40" />
           <p className="text-sm">No records yet. Use the Import button on each file to populate this table.</p>
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-lg border border-border">
+          <div className="overflow-x-auto rounded-lg border border-white/10 bg-white/5">
             <table className="w-full text-sm">
-              <thead className="bg-muted/50 sticky top-0">
+              <thead className="bg-white/5 sticky top-0">
                 <tr>
                   {columns.map(col => (
-                    <th key={col.key} className="text-left px-4 py-2.5 font-medium text-muted-foreground whitespace-nowrap">
+                    <th key={col.key} className="text-left px-4 py-2.5 font-medium text-gray-400 whitespace-nowrap">
                       {col.label}
                     </th>
                   ))}
@@ -66,11 +66,11 @@ export default function EntityDataTable({ entityName, columns, searchFields, tit
               </thead>
               <tbody>
                 {records.map((record, i) => (
-                  <tr key={record.id || i} className="border-t border-border hover:bg-muted/30">
+                  <tr key={record.id || i} className="border-t border-white/10 hover:bg-white/10">
                     {columns.map(col => (
                       <td key={col.key} className={col.wrap
-                        ? "px-4 py-2 max-w-[280px] text-sm leading-snug"
-                        : "px-4 py-2 whitespace-nowrap max-w-xs overflow-hidden text-ellipsis"
+                        ? "px-4 py-2 max-w-[280px] text-sm leading-snug text-gray-200"
+                        : "px-4 py-2 whitespace-nowrap max-w-xs overflow-hidden text-ellipsis text-gray-200"
                       }>
                         {col.render ? col.render(record) : (record[col.key] != null ? String(record[col.key]) : "—")}
                       </td>
@@ -80,7 +80,7 @@ export default function EntityDataTable({ entityName, columns, searchFields, tit
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">{records.length} records loaded</p>
+          <p className="text-xs text-gray-500 mt-2">{records.length} records loaded</p>
         </>
       )}
     </div>
