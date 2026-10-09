@@ -3,28 +3,27 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import {
   Bot, Send, X, Radio, Zap, Database, Eye, Edit, Cpu,
-  Terminal, Webhook, RefreshCw,
+  Terminal, Webhook, RefreshCw, Globe, Sparkles,
 } from "lucide-react";
 
 const GPT_SYNC_ENDPOINT = "https://build-scale-dominate.base44.app/functions/systemGateway";
 
 const QUICK_ACTIONS = [
-  { label: "System Status", cmd: "status", icon: Database },
-  { label: "Query Website", cmd: "query Website", icon: Eye },
-  { label: "Query Pack", cmd: "query Pack", icon: Eye },
-  { label: "List Agents", cmd: "query Agent", icon: Bot },
-  { label: "Invoke Research", cmd: "invoke autonomousResearchEngine", icon: Cpu },
-  { label: "Help", cmd: "help", icon: Terminal },
+  { label: "System Status", prompt: "Give me a full system status overview with entity counts", icon: Database },
+  { label: "Show Packs", prompt: "Show me all packs in the system", icon: Eye },
+  { label: "Research Industry", prompt: "Research the HVAC contractor industry and benchmark the top 3 competitors", icon: Cpu },
+  { label: "Scan Systems", prompt: "Scan all my internal systems and show me the inventory", icon: Zap },
+  { label: "Build Initiation", prompt: "Start a build initiation for electrical contractor software", icon: Sparkles },
+  { label: "Web Search", prompt: "Search the web for the latest trends in field service management software", icon: Globe },
 ];
 
 export default function AutonomousChatAgent() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "agent", text: "Autonomous Chat Agent online. I have maximum autonomy — Read, Write, Execute, and GPT Sync are all enabled. Type 'help' for commands or use the quick actions below." },
+    { role: "agent", text: "Autonomous Agent online. I have full natural language understanding and maximum autonomy — I can read, write, execute, provision, research, and search the web. Tell me what you need in plain English." },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
-  const [autonomy, setAutonomy] = useState({ read: true, write: true, execute: true, gptSync: true });
   const [gptSyncActive, setGptSyncActive] = useState(false);
   const scrollRef = useRef(null);
 
@@ -38,135 +37,38 @@ export default function AutonomousChatAgent() {
     setMessages((prev) => [...prev, { role, text }]);
   };
 
-  const executeCommand = async (cmd) => {
-    const trimmed = cmd.trim();
-    if (!trimmed) return;
+  const sendMessage = async (text) => {
+    const trimmed = text.trim();
+    if (!trimmed || busy) return;
 
     addMessage("user", trimmed);
     setInput("");
     setBusy(true);
 
     try {
-      const parts = trimmed.split(/\s+/);
-      const command = parts[0].toLowerCase();
+      const history = messages.slice(-8).map((m) => ({
+        role: m.role === "agent" ? "assistant" : "user",
+        text: m.text,
+      }));
 
-      if (command === "help" || trimmed === "?") {
-        addMessage("agent", [
-          "Available commands:",
-          "  status — Get system overview with entity counts",
-          "  query <entity> — List records from any entity",
-          "  get <entity> <id> — Get a single record",
-          "  create <entity> <json> — Create a record (requires Write)",
-          "  update <entity> <id> <json> — Update a record (requires Write)",
-          "  invoke <function> [json] — Invoke a backend function (requires Execute)",
-          "  functions — List all available backend functions",
-          "  gpt sync — Toggle GPT sync channel",
-          "",
-          "Entities: Website, Pack, Agent, SocialPost, LaunchCampaign, etc.",
-          "Functions: autonomousResearchEngine, godModeSeo, generatePage, socialMediaEngine, etc.",
-        ].join("\n"));
-      } else if (command === "status") {
-        if (!autonomy.read) { addMessage("agent", "Warning: Read autonomy is disabled."); return; }
-        const entities = ["Website", "Pack", "Agent", "SocialPost", "LaunchCampaign", "GeneratedPage", "ProvisioningJob", "OutreachCampaign", "OnboardingSession"];
-        const counts = {};
-        for (const e of entities) {
-          try {
-            const c = await base44.entities[e]?.count?.({});
-            if (typeof c === "number") counts[e] = c;
-          } catch {}
-        }
-        const summary = Object.entries(counts).map(([k, v]) => "  " + k + ": " + v).join("\n");
-        addMessage("agent", "System Status\n\nConnected entities:\n" + (summary || "(no data)"));
-      } else if (command === "query" || command === "list") {
-        if (!autonomy.read) { addMessage("agent", "Warning: Read autonomy is disabled."); return; }
-        const entity = parts[1];
-        if (!entity) { addMessage("agent", "Usage: query <entity>"); return; }
-        try {
-          const res = await base44.entities[entity]?.filter?.({}, { limit: 10, sort: "-created_date" });
-          const items = res?.items || res || [];
-          if (items.length === 0) { addMessage("agent", "No records found in " + entity + "."); return; }
-          const summary = items.map((r, i) => (i + 1) + ". " + (r.name || r.title || r.id)).join("\n");
-          addMessage("agent", entity + " (" + items.length + " records):\n" + summary);
-        } catch (e) {
-          addMessage("agent", "Error querying " + entity + ": " + e.message);
-        }
-      } else if (command === "get") {
-        if (!autonomy.read) { addMessage("agent", "Warning: Read autonomy is disabled."); return; }
-        const entity = parts[1];
-        const id = parts[2];
-        if (!entity || !id) { addMessage("agent", "Usage: get <entity> <id>"); return; }
-        try {
-          const record = await base44.entities[entity]?.get?.(id);
-          addMessage("agent", entity + " record:\n" + JSON.stringify(record, null, 2).slice(0, 2000));
-        } catch (e) {
-          addMessage("agent", "Error: " + e.message);
-        }
-      } else if (command === "create") {
-        if (!autonomy.write) { addMessage("agent", "Warning: Write autonomy is disabled."); return; }
-        const entity = parts[1];
-        if (!entity) { addMessage("agent", "Usage: create <entity> <json>"); return; }
-        const jsonStr = trimmed.slice(entity.length + 8).trim();
-        let data;
-        try { data = JSON.parse(jsonStr); } catch { addMessage("agent", 'Invalid JSON. Example: create Pack {"name":"Test Pack"}'); return; }
-        try {
-          const record = await base44.entities[entity]?.create?.(data);
-          addMessage("agent", "Created " + entity + " record: " + (record?.id || "success"));
-        } catch (e) {
-          addMessage("agent", "Error creating " + entity + ": " + e.message);
-        }
-      } else if (command === "update") {
-        if (!autonomy.write) { addMessage("agent", "Warning: Write autonomy is disabled."); return; }
-        const entity = parts[1];
-        const id = parts[2];
-        if (!entity || !id) { addMessage("agent", "Usage: update <entity> <id> <json>"); return; }
-        const jsonStr = parts.slice(3).join(" ");
-        let data;
-        try { data = JSON.parse(jsonStr); } catch { addMessage("agent", "Invalid JSON."); return; }
-        try {
-          await base44.entities[entity]?.update?.(id, data);
-          addMessage("agent", "Updated " + entity + " " + id);
-        } catch (e) {
-          addMessage("agent", "Error: " + e.message);
-        }
-      } else if (command === "invoke") {
-        if (!autonomy.execute) { addMessage("agent", "Warning: Execute autonomy is disabled."); return; }
-        const fn = parts[1];
-        if (!fn) { addMessage("agent", "Usage: invoke <function> [json]"); return; }
-        const jsonStr = trimmed.slice(fn.length + 8).trim();
-        let payload = {};
-        if (jsonStr) { try { payload = JSON.parse(jsonStr); } catch { addMessage("agent", "Invalid JSON payload."); return; } }
-        try {
-          addMessage("agent", "Invoking " + fn + "...");
-          const res = await base44.functions.invoke(fn, payload);
-          const result = res?.data || res;
-          const text = typeof result === "string" ? result : JSON.stringify(result, null, 2);
-          addMessage("agent", fn + " result:\n" + text.slice(0, 3000));
-        } catch (e) {
-          addMessage("agent", "Error invoking " + fn + ": " + e.message);
-        }
-      } else if (command === "functions") {
-        const fns = ["autonomousResearchEngine", "godModeSeo", "generatePage", "processGenerationQueue", "launchCampaign", "generateSocialContent", "socialMediaEngine", "generateMedia", "generateBusinessName", "executeAgentTask", "ingestPack", "provisionApprovedPack", "provisionSystem", "sendOutreach", "dailyFollowUp", "onboardingAI", "chatEdit", "systemGateway", "supabaseConvergence"];
-        addMessage("agent", "Available functions (" + fns.length + "):\n" + fns.map((f) => "  - " + f).join("\n"));
-      } else if (command === "gpt" && parts[1]?.toLowerCase() === "sync") {
-        setGptSyncActive((prev) => {
-          const next = !prev;
-          addMessage("agent", next ? "GPT Sync channel ACTIVATED. External GPT can now send commands via the system gateway endpoint." : "GPT Sync channel deactivated.");
-          return next;
-        });
-      } else {
-        addMessage("agent", 'Unknown command: "' + trimmed + '". Type "help" for available commands.');
-      }
-    } catch (e) {
-      addMessage("agent", "Unexpected error: " + e.message);
-    } finally {
-      setBusy(false);
+      const res = await base44.functions.invoke("autonomousAgent", {
+        action: "chat",
+        message: trimmed,
+        history,
+      });
+
+      const reply = res.data?.reply || "I processed your request.";
+      addMessage("agent", reply);
+    } catch (err) {
+      addMessage("agent", "Error: " + (err.message || "Failed to process request. Make sure the autonomous agent function is deployed."));
     }
+
+    setBusy(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!input.trim() || busy) return;
-    executeCommand(input);
+    sendMessage(input);
   };
 
   return (
@@ -195,7 +97,7 @@ export default function AutonomousChatAgent() {
               </div>
               <div>
                 <h3 className="text-sm font-bold text-white">Autonomous Agent</h3>
-                <p className="text-[10px] text-white/50">Maximum Autonomy Mode</p>
+                <p className="text-[10px] text-white/50">Full NLP — Zero Limitations</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -212,32 +114,24 @@ export default function AutonomousChatAgent() {
             </div>
           </div>
 
-          {/* Autonomy controls */}
+          {/* Capability badges */}
           <div className="px-3 py-2 border-b border-white/10 bg-white/5">
             <div className="flex items-center gap-1.5 flex-wrap">
               {[
-                { key: "read", label: "Read", icon: Eye },
-                { key: "write", label: "Write", icon: Edit },
-                { key: "execute", label: "Execute", icon: Zap },
-              ].map(({ key, label, icon: Icon }) => (
-                <button
-                  key={key}
-                  onClick={() => setAutonomy((prev) => ({ ...prev, [key]: !prev[key] }))}
-                  className={"flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors " +
-                    (autonomy[key] ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-white/5 text-white/30 border border-white/10")}
+                { label: "Read", icon: Eye },
+                { label: "Write", icon: Edit },
+                { label: "Execute", icon: Zap },
+                { label: "Web", icon: Globe },
+                { label: "GPT Sync", icon: Webhook },
+              ].map(({ label, icon: Icon }) => (
+                <span
+                  key={label}
+                  className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30"
                 >
                   <Icon className="w-3 h-3" />
                   {label}
-                </button>
+                </span>
               ))}
-              <button
-                onClick={() => setAutonomy((prev) => ({ ...prev, gptSync: !prev.gptSync }))}
-                className={"flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors " +
-                  (autonomy.gptSync ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "bg-white/5 text-white/30 border border-white/10")}
-              >
-                <Webhook className="w-3 h-3" />
-                GPT Sync
-              </button>
             </div>
           </div>
 
@@ -266,8 +160,9 @@ export default function AutonomousChatAgent() {
             ))}
             {busy && (
               <div className="flex justify-start">
-                <div className="bg-white/5 rounded-lg px-3 py-2 border border-white/10">
+                <div className="bg-white/5 rounded-lg px-3 py-2 border border-white/10 flex items-center gap-2">
                   <RefreshCw className="w-3.5 h-3.5 text-white/40 animate-spin" />
+                  <span className="text-xs text-white/40">Processing...</span>
                 </div>
               </div>
             )}
@@ -279,7 +174,7 @@ export default function AutonomousChatAgent() {
               {QUICK_ACTIONS.map((qa) => (
                 <button
                   key={qa.label}
-                  onClick={() => executeCommand(qa.cmd)}
+                  onClick={() => sendMessage(qa.prompt)}
                   disabled={busy}
                   className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10 transition-colors disabled:opacity-30"
                 >
@@ -297,7 +192,7 @@ export default function AutonomousChatAgent() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a command... (try 'help')"
+                placeholder="Tell me anything in natural language..."
                 disabled={busy}
                 className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500/50"
               />
