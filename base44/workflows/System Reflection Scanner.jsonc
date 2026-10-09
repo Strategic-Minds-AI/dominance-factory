@@ -1,0 +1,55 @@
+{
+  "description": "Runs a full system reflection scan every 6 hours \u2014 scans all entities, checks connectors and secrets, creates SystemIssue records for gaps, and auto-fixes what it can.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */6 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "name": "System Reflection Scanner",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "system_reflection_scanner",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_scan": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "systemReflection",
+            "args": {
+              "action": "scan"
+            }
+          },
+          "then": "auto_fix"
+        }
+      },
+      {
+        "auto_fix": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "systemReflection",
+            "args": {
+              "action": "auto_fix_all"
+            }
+          },
+          "then": "end"
+        }
+      }
+    ]
+  }
+}
