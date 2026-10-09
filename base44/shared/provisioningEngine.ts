@@ -129,8 +129,13 @@ const GODADDY_API = 'https://api.godaddy.com/v1';
 function getGoDaddyAuth(): string {
   const key = secrets.get('GODADDY_API_KEY');
   const secret = secrets.get('GODADDY_API_SECRET');
-  if (!key || !secret) throw new Error('GODADDY_API_KEY and GODADDY_API_SECRET required');
-  return `sso-key ${key}:${secret}`;
+  if (!key) throw new Error('GODADDY_API_KEY required');
+  // If secret is set separately, use key:secret
+  if (secret) return `sso-key ${key}:${secret}`;
+  // If key contains a colon, it's already combined as key:secret
+  if (key.includes(':')) return `sso-key ${key}`;
+  // Otherwise use the key alone (some GoDaddy setups use a single token)
+  return `sso-key ${key}`;
 }
 
 export async function checkDomainAvailability(domain: string): Promise<{ available: boolean; price?: number; currency?: string }> {
