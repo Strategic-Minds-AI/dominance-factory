@@ -1,8 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
 
-const AI_GATEWAY_URL = 'https://ai-gateway.vercel.sh/v1/chat/completions';
-const DEFAULT_MODEL = 'openai/gpt-6-astra';
+const AI_GATEWAY_URL = 'https://api.openai.com/v1/chat/completions';
+const DEFAULT_MODEL = 'gpt-4o';
 
 const SYSTEM_PROMPT = `You are a helpful AI assistant (like ChatGPT) that can also edit a live HTML visual preview the user sees on the right side of their screen.
 
@@ -35,8 +35,8 @@ export default async function(req: Request): Promise<Response> {
       return Response.json({ error: 'message is required' }, { status: 400 });
     }
 
-    const apiKey = secrets.get('VERCEL_AI_GATEWAY_API_KEY');
-    if (!apiKey) return Response.json({ error: 'VERCEL_AI_GATEWAY_API_KEY not set' }, { status: 500 });
+    const apiKey = secrets.get('OPENAI_API_KEY');
+    if (!apiKey) return Response.json({ error: 'OPENAI_API_KEY not set — add it in the app dashboard Secrets page' }, { status: 500 });
 
     const messages = [
       { role: 'system', content: SYSTEM_PROMPT },
