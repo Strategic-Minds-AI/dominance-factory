@@ -44,6 +44,20 @@
       ],
       "default": "Other"
     },
+    "pipeline_phase": {
+      "type": "string",
+      "title": "Pipeline Phase Access Group",
+      "enum": [
+        "start",
+        "research",
+        "simulate",
+        "design",
+        "release",
+        "social",
+        "operate"
+      ],
+      "default": "design"
+    },
     "description": {
       "type": "string",
       "title": "Description"
