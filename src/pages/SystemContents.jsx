@@ -193,14 +193,14 @@ export default function SystemContents() {
         {/* Entity Catalog */}
         <Card className="p-5 bg-zinc-900 border-white/10">
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-            <Database className="w-4 h-4 text-blue-400" /> Data Entities ({ENTITY_CATALOG.length})
+            <Database className="w-4 h-4 text-blue-400" /> 1. Data Entities — Intelligence Storage ({ENTITY_CATALOG.length})
           </h2>
           <div className="space-y-1">
             {ENTITY_CATALOG.map((e, i) => (
               <div key={i} className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-white/5 border border-transparent hover:border-white/10">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white">{e.name}</span>
+                    <span className="text-sm font-medium text-white"><span className="text-blue-400/50 mr-1.5 font-mono">1.{i + 1}</span>{e.name}</span>
                     <Badge variant="outline" className="text-xs text-blue-300 border-blue-500/30">{e.category}</Badge>
                     {entityCounts[e.name] !== undefined && (
                       <span className="text-xs text-white/40">{entityCounts[e.name]} records</span>
@@ -216,12 +216,12 @@ export default function SystemContents() {
         {/* Functions */}
         <Card className="p-5 bg-zinc-900 border-white/10">
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-            <Cog className="w-4 h-4 text-blue-400" /> Backend Functions ({FUNCTION_CATALOG.length})
+            <Cog className="w-4 h-4 text-blue-400" /> 2. Backend Functions — System Operations ({FUNCTION_CATALOG.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {FUNCTION_CATALOG.map((f, i) => (
               <div key={i} className="p-3 rounded-md bg-white/5 border border-white/10">
-                <p className="text-sm font-medium text-white">{f.name}</p>
+                <p className="text-sm font-medium text-white"><span className="text-blue-400/50 mr-1.5 font-mono">2.{i + 1}</span>{f.name}</p>
                 <p className="text-xs text-white/50 mt-0.5">{f.desc}</p>
               </div>
             ))}
@@ -232,12 +232,12 @@ export default function SystemContents() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card className="p-5 bg-zinc-900 border-white/10">
             <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Workflow className="w-4 h-4 text-blue-400" /> Workflows ({WORKFLOW_CATALOG.length})
+              <Workflow className="w-4 h-4 text-blue-400" /> 3. Automated Workflows ({WORKFLOW_CATALOG.length})
             </h2>
             <div className="space-y-2">
               {WORKFLOW_CATALOG.map((w, i) => (
                 <div key={i} className="p-2 rounded-md bg-white/5">
-                  <p className="text-sm font-medium text-white">{w.name}</p>
+                  <p className="text-sm font-medium text-white"><span className="text-blue-400/50 mr-1.5 font-mono">3.{i + 1}</span>{w.name}</p>
                   <p className="text-xs text-white/50">{w.desc}</p>
                 </div>
               ))}
@@ -245,12 +245,12 @@ export default function SystemContents() {
           </Card>
           <Card className="p-5 bg-zinc-900 border-white/10">
             <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Plug className="w-4 h-4 text-blue-400" /> Connected Integrations ({CONNECTOR_CATALOG.length})
+              <Plug className="w-4 h-4 text-blue-400" /> 4. Connected Integrations ({CONNECTOR_CATALOG.length})
             </h2>
             <div className="space-y-2">
               {CONNECTOR_CATALOG.map((c, i) => (
                 <div key={i} className="p-2 rounded-md bg-white/5">
-                  <p className="text-sm font-medium text-white">{c.name}</p>
+                  <p className="text-sm font-medium text-white"><span className="text-blue-400/50 mr-1.5 font-mono">4.{i + 1}</span>{c.name}</p>
                   <p className="text-xs text-white/50">{c.desc}</p>
                 </div>
               ))}
@@ -261,12 +261,12 @@ export default function SystemContents() {
         {/* Pages */}
         <Card className="p-5 bg-zinc-900 border-white/10">
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-            <Layout className="w-4 h-4 text-blue-400" /> System Pages ({PAGE_CATALOG.length})
+            <Layout className="w-4 h-4 text-blue-400" /> 5. System Pages ({PAGE_CATALOG.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {PAGE_CATALOG.map((p, i) => (
               <Link key={i} to={p.path} className="p-3 rounded-md bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-500/5 transition-colors">
-                <p className="text-sm font-medium text-white">{p.name}</p>
+                <p className="text-sm font-medium text-white"><span className="text-blue-400/50 mr-1.5 font-mono">5.{i + 1}</span>{p.name}</p>
                 <p className="text-xs text-white/50">{p.desc}</p>
               </Link>
             ))}
@@ -276,12 +276,12 @@ export default function SystemContents() {
         {/* Gap Analysis */}
         <Card className="p-5 bg-zinc-900 border-white/10">
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-red-400" /> Gap Analysis — Path to Millions of Sites
+            <Layers className="w-4 h-4 text-red-400" /> 6. Gap Analysis — Path to Millions of Sites
           </h2>
           <div className="space-y-4">
             {GAPS.map((gap, gi) => (
               <div key={gi}>
-                <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">{gap.category}</h3>
+                <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-2"><span className="text-red-400/50 mr-1.5 font-mono">6.{gi + 1}</span>{gap.category}</h3>
                 <div className="space-y-1">
                   {gap.items.map((item, ii) => {
                     const cfg = STATUS_CONFIG[item.status];
@@ -291,7 +291,7 @@ export default function SystemContents() {
                         <Icon className={`w-4 h-4 ${cfg.color} shrink-0 mt-0.5`} />
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <p className="text-sm font-medium text-white">{item.name}</p>
+                            <p className="text-sm font-medium text-white"><span className="text-red-400/40 mr-1.5 font-mono text-xs">6.{gi + 1}.{ii + 1}</span>{item.name}</p>
                             <Badge variant="outline" className={`text-xs ${cfg.color} ${cfg.border}`}>{cfg.label}</Badge>
                           </div>
                           <p className="text-xs text-white/50 mt-0.5">{item.desc}</p>
