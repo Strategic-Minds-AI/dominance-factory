@@ -29,7 +29,7 @@ export default async function(req: Request): Promise<Response> {
     // ── Provision Railway service (for backend/browser/agent systems) ──
     if (job_type === 'browser_service' || job_type === 'agent_system' || job_type === 'full_stack' || job_type === 'social_suite') {
       try {
-        const repo = repo_url || 'https://github.com/microsoft/playwright-python';
+        const repo = repo_url || 'https://github.com/Strategic-Minds-AI/dominance-factory.git';
         const railway = await provisionRailwayService(name, repo, env_vars || {});
         results.railway = railway;
         await base44.asServiceRole.entities.ProvisioningJob.update(job.id, {
