@@ -16,6 +16,7 @@ export const MODELS = {
   heavy: 'anthropic/claude-opus-4',
   social: 'openai/gpt-6-astra',
   outreach: 'openai/gpt-6-astra',
+  websearch: 'perplexity/sonar',
   default: 'openai/gpt-6-astra',
 };
 
@@ -30,18 +31,21 @@ export async function aiComplete(params: {
   messages: Array<{ role: string; content: string }>;
   temperature?: number;
   max_tokens?: number;
+  online?: boolean;
 }): Promise<string> {
   const apiKey = getApiKey();
+  const body: Record<string, unknown> = {
+    model: params.model || MODELS.default,
+    messages: params.messages,
+    temperature: params.temperature ?? 0.7,
+    max_tokens: params.max_tokens ?? 4096,
+    stream: false,
+  };
+  if (params.online) body.online = true;
   const res = await fetch(GATEWAY_URL, {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: params.model || MODELS.default,
-      messages: params.messages,
-      temperature: params.temperature ?? 0.7,
-      max_tokens: params.max_tokens ?? 4096,
-      stream: false,
-    }),
+    body: JSON.stringify(body),
     signal: AbortSignal.timeout(120000),
   });
   if (!res.ok) {
@@ -59,6 +63,7 @@ export async function aiCompleteJson<T = any>(params: {
   messages: Array<{ role: string; content: string }>;
   temperature?: number;
   max_tokens?: number;
+  online?: boolean;
 }): Promise<T> {
   const text = await aiComplete({ ...params, temperature: params.temperature ?? 0.3 });
   const match = text.match(/\{[\s\S]*\}/);

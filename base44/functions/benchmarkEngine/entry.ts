@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { aiCompleteJson, MODELS } from "../../shared/vercelAiGateway.ts";
 import { classifyAllSystems, findReusableAssets } from "../../shared/systemClassifier.ts";
 
 export default async function(req: Request): Promise<Response> {
@@ -21,48 +22,45 @@ export default async function(req: Request): Promise<Response> {
       }
 
       // Step 1: Search the web for top 3 rated systems in this industry
-      const searchPrompt = `Search the web and find the top 3 highest-rated, most successful existing systems/platforms/websites in the "${industry}" industry. For each one, provide:
-1. The system/platform name
-2. Its URL
-3. Its overall rating or reputation score (out of 100)
-4. The source of that rating (e.g., G2, Capterra, Trustpilot, industry reports)
-5. Its key features (list 5-8)
-6. Its tech stack if known
-7. Its market position and competitive advantages
-8. Its known weaknesses or gaps
+      // Uses Vercel AI Gateway with online mode (web search) via Perplexity Sonar
+      const searchPrompt = `Search the web and find the top 3 highest-rated, most successful existing systems/platforms/websites in the "${industry}" industry${marketContext ? ` (market context: ${marketContext})` : ''}.
 
-Return ONLY these 3 systems, ranked 1-3 by overall quality and market dominance. Be specific and factual.`;
+For each system, provide:
+1. name: The system/platform name
+2. url: Its primary URL
+3. rating_score: Overall rating or reputation score (0-100, based on reviews, market presence, user satisfaction)
+4. rating_source: Where that rating comes from (e.g., G2, Capterra, Trustpilot, industry reports)
+5. key_features: Array of 5-8 key features
+6. tech_stack: Known technology stack
+7. market_position: Its market position and dominance
+8. competitive_advantages: What gives it an edge
+9. weaknesses: Known weaknesses or gaps
 
-      const searchResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-        prompt: searchPrompt,
-        add_context_from_internet: true,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            systems: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  name: { type: "string" },
-                  url: { type: "string" },
-                  rating_score: { type: "number" },
-                  rating_source: { type: "string" },
-                  key_features: { type: "array", items: { type: "string" } },
-                  tech_stack: { type: "string" },
-                  market_position: { type: "string" },
-                  competitive_advantages: { type: "string" },
-                  weaknesses: { type: "string" },
-                },
-                required: ["name", "url", "rating_score", "key_features"],
-              },
-            },
-          },
-          required: ["systems"],
-        },
+Return ONLY a JSON object with this exact structure:
+{"systems": [{"name": "...", "url": "...", "rating_score": 85, "rating_source": "...", "key_features": ["..."], "tech_stack": "...", "market_position": "...", "competitive_advantages": "...", "weaknesses": "..."}]}
+
+Include exactly 3 systems, ranked 1-3 by overall quality and market dominance. Be specific and factual — use real, existing systems.`;
+
+      const searchData = await aiCompleteJson<{
+        systems: Array<{
+          name: string;
+          url: string;
+          rating_score: number;
+          rating_source: string;
+          key_features: string[];
+          tech_stack: string;
+          market_position: string;
+          competitive_advantages: string;
+          weaknesses: string;
+        }>;
+      }>({
+        model: MODELS.websearch,
+        messages: [{ role: 'user', content: searchPrompt }],
+        temperature: 0.2,
+        max_tokens: 8192,
+        online: true,
       });
 
-      const searchData = typeof searchResponse === 'string' ? JSON.parse(searchResponse) : searchResponse;
       const systems = searchData.systems || [];
 
       if (!systems || systems.length === 0) {
@@ -73,11 +71,11 @@ Return ONLY these 3 systems, ranked 1-3 by overall quality and market dominance.
       const internalInventory = classifyAllSystems();
 
       // Step 3: For each benchmark system, reverse engineer it and create a blueprint
+      // Uses Vercel AI Gateway with Claude Sonnet for complex reasoning
       const benchmarks = [];
       for (let i = 0; i < systems.length; i++) {
         const sys = systems[i];
 
-        // Reverse engineering prompt
         const reversePrompt = `Reverse engineer the following system/platform in the "${industry}" industry and create a deterministic, end-to-end systematic and programmatic blueprint for replicating it.
 
 System: ${sys.name}
@@ -87,56 +85,33 @@ Tech Stack: ${sys.tech_stack || "Unknown"}
 Market Position: ${sys.market_position || "Unknown"}
 Competitive Advantages: ${sys.competitive_advantages || "Unknown"}
 
-Create a detailed replication roadmap with these sections:
-1. architecture_summary: High-level architecture description
-2. core_modules: List of modules/components needed (each with name, purpose, dependencies)
-3. data_models: Key data entities needed
-4. integration_points: External services/APIs required
-5. implementation_steps: Ordered step-by-step implementation phases
-6. tech_recommendations: Specific technologies and tools to use
-7. timeline_estimate: Rough timeline for each phase
-8. success_metrics: KPIs to measure replication success
+Create a detailed replication roadmap. Return ONLY a JSON object with this exact structure:
+{
+  "architecture_summary": "High-level architecture description",
+  "core_modules": [{"name": "...", "purpose": "...", "dependencies": ["..."]}],
+  "data_models": ["entity1", "entity2"],
+  "integration_points": ["service1", "service2"],
+  "implementation_steps": [{"phase": "Phase 1: ...", "description": "...", "timeline": "X weeks"}],
+  "tech_recommendations": ["tech1", "tech2"],
+  "success_metrics": ["KPI1", "KPI2"]
+}
 
-Be specific and actionable. This blueprint will be followed deterministically.`;
+Be specific and actionable. This blueprint will be followed deterministically to build a competing system.`;
 
-        const reverseResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-          prompt: reversePrompt,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              architecture_summary: { type: "string" },
-              core_modules: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    name: { type: "string" },
-                    purpose: { type: "string" },
-                    dependencies: { type: "array", items: { type: "string" } },
-                  },
-                },
-              },
-              data_models: { type: "array", items: { type: "string" } },
-              integration_points: { type: "array", items: { type: "string" } },
-              implementation_steps: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    phase: { type: "string" },
-                    description: { type: "string" },
-                    timeline: { type: "string" },
-                  },
-                },
-              },
-              tech_recommendations: { type: "array", items: { type: "string" } },
-              success_metrics: { type: "array", items: { type: "string" } },
-            },
-            required: ["architecture_summary", "core_modules", "implementation_steps"],
-          },
+        const blueprint = await aiCompleteJson<{
+          architecture_summary: string;
+          core_modules: Array<{ name: string; purpose: string; dependencies: string[] }>;
+          data_models: string[];
+          integration_points: string[];
+          implementation_steps: Array<{ phase: string; description: string; timeline: string }>;
+          tech_recommendations: string[];
+          success_metrics: string[];
+        }>({
+          model: MODELS.complex,
+          messages: [{ role: 'user', content: reversePrompt }],
+          temperature: 0.3,
+          max_tokens: 8192,
         });
-
-        const blueprint = typeof reverseResponse === 'string' ? JSON.parse(reverseResponse) : reverseResponse;
 
         // Map benchmark features to reusable internal assets
         const reusableAssets = findReusableAssets(sys.key_features || [], internalInventory);
@@ -176,6 +151,7 @@ Be specific and actionable. This blueprint will be followed deterministically.`;
         industry,
         benchmark_count: benchmarks.length,
         benchmarks,
+        provider: 'vercel_ai_gateway',
       });
     }
 
