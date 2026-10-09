@@ -1,0 +1,40 @@
+{
+  "name": "Pack Approval Provisioning",
+  "description": "Auto-provisions a live Vercel website when a pack is approved in the dashboard",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Pack",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"approved\" and .trigger.old_data.status != \"approved\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "pack_approval_provisioning",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "provision_site": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "provisionApprovedPack",
+            "args": {
+              "pack_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Provision live website",
+            "description": "Deploy approved pack to Vercel"
+          }
+        }
+      }
+    ]
+  }
+}
