@@ -1,0 +1,85 @@
+{
+  "name": "BuildPlan",
+  "type": "object",
+  "properties": {
+    "industry": {
+      "type": "string",
+      "title": "Industry"
+    },
+    "market_context": {
+      "type": "string",
+      "title": "Market Context"
+    },
+    "scan_summary": {
+      "type": "string",
+      "title": "Internal Scan Summary (JSON)"
+    },
+    "total_internal_systems": {
+      "type": "number",
+      "default": 0,
+      "title": "Total Internal Systems Scanned"
+    },
+    "benchmark_ids": {
+      "type": "string",
+      "title": "Benchmark System IDs (JSON array)"
+    },
+    "reusable_assets": {
+      "type": "string",
+      "title": "Reusable Assets Mapping (JSON)"
+    },
+    "gaps": {
+      "type": "string",
+      "title": "Gap Analysis (JSON)"
+    },
+    "build_plan": {
+      "type": "string",
+      "title": "Phased Build Plan (JSON)"
+    },
+    "coverage_percentage": {
+      "type": "number",
+      "default": 0,
+      "title": "Feature Coverage %"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "initiating",
+        "scanning",
+        "benchmarking",
+        "analyzing",
+        "complete",
+        "failed"
+      ],
+      "default": "initiating"
+    },
+    "session_id": {
+      "type": "string",
+      "title": "Linked Strategy Session ID"
+    }
+  },
+  "required": [
+    "industry"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

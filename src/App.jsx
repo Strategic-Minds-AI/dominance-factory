@@ -43,6 +43,7 @@ import AgentReference from '@/pages/AgentReference';
 import SystemGapAnalysis from '@/pages/SystemGapAnalysis';
 import SystemScanner from '@/pages/SystemScanner';
 import BenchmarkEngine from '@/pages/BenchmarkEngine';
+import BuildInitiation from '@/pages/BuildInitiation';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -108,6 +109,7 @@ const AuthenticatedApp = () => {
           <Route path="/gap-analysis" element={<SystemGapAnalysis />} />
           <Route path="/system-scanner" element={<SystemScanner />} />
           <Route path="/benchmark-engine" element={<BenchmarkEngine />} />
+          <Route path="/build-initiation" element={<BuildInitiation />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

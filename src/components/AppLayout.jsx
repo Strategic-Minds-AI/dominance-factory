@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { BarChart3, Crown, Globe, Sparkles, MapPin, Trophy, TrendingUp, Calculator, Layers, CheckCircle, PlayCircle, Package, Database, Palette, Rocket, FileText, Share2, ImageIcon, Send, Bot, Activity, FlaskConical, ShieldCheck, Eye, Server, Cloud, HeartPulse, BookOpen, Webhook, Cpu, Brain, Scan } from "lucide-react";
+import { BarChart3, Crown, Globe, Sparkles, MapPin, Trophy, TrendingUp, Calculator, Layers, CheckCircle, PlayCircle, Package, Database, Palette, Rocket, FileText, Share2, ImageIcon, Send, Bot, Activity, FlaskConical, ShieldCheck, Eye, Server, Cloud, HeartPulse, BookOpen, Webhook, Cpu, Brain, Scan, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AutonomousChatAgent from "@/components/AutonomousChatAgent";
 import { Library } from "lucide-react";
@@ -32,12 +32,13 @@ const navGroups = [
   {
     label: "Phase 3 — Auto Builder",
     items: [
-      { step: 13, label: "Business Onboarding", path: "/onboarding", icon: PlayCircle },
-      { step: 14, label: "Brand & Design System", path: "/packs", icon: Package },
-      { step: 15, label: "Website Genome", path: "/websites", icon: Database },
-      { step: 16, label: "Visual Editor", path: "/editor", icon: Palette },
-      { step: 17, label: "Pack Review", path: "/packs", icon: Package },
-      { step: 18, label: "Programmatic Launch", path: "/launch", icon: Rocket },
+      { step: 13, label: "Build Initiation & Gap Analysis", path: "/build-initiation", icon: Zap },
+      { step: 14, label: "Business Onboarding", path: "/onboarding", icon: PlayCircle },
+      { step: 15, label: "Brand & Design System", path: "/packs", icon: Package },
+      { step: 16, label: "Website Genome", path: "/websites", icon: Database },
+      { step: 17, label: "Visual Editor", path: "/editor", icon: Palette },
+      { step: 18, label: "Pack Review", path: "/packs", icon: Package },
+      { step: 19, label: "Programmatic Launch", path: "/launch", icon: Rocket },
     ],
   },
   {
