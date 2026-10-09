@@ -12,8 +12,8 @@ export default function GptSync() {
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-2">
           <Webhook className="h-5 w-5" />
           <div>
-            <h1 className="text-xl font-bold">GPT Sync & Website Library</h1>
-            <p className="text-sm opacity-80">Submit website mockups and access the creation library</p>
+            <h1 className="text-xl font-bold">GPT System Gateway</h1>
+            <p className="text-sm opacity-80">Full end-to-end system access for GPT — query entities, invoke functions, trigger research, submit packs</p>
           </div>
         </div>
       </header>

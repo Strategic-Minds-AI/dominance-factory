@@ -1,55 +1,69 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Sparkles, BarChart3, Crown, PlayCircle, Palette, Package, Rocket, Zap, Globe, Share2, Server, BookOpen, LayoutDashboard, Bot, Brain, Send, Image as ImageIcon, Command, Webhook, FlaskConical, Activity, Cpu } from "lucide-react";
+import { BarChart3, Crown, Globe, Sparkles, MapPin, Trophy, TrendingUp, Calculator, Layers, CheckCircle, PlayCircle, Package, Database, Palette, Rocket, FileText, Share2, ImageIcon, Send, Bot, Activity, FlaskConical, ShieldCheck, Eye, Server, Cloud, HeartPulse, BookOpen, Webhook, Cpu, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navGroups = [
   {
     label: "Phase 1 — Research & Intelligence",
     items: [
-      { step: 1, label: "Industry Intelligence", path: "/industries", icon: BarChart3 },
-      { step: 2, label: "God Mode SEO Optimizer", path: "/god-mode", icon: Zap },
-      { step: 3, label: "SEO Dominance Strategy", path: "/seo-strategy", icon: Crown },
+      { step: 1, label: "Industry Opportunity Scanner", path: "/industries", icon: BarChart3 },
+      { step: 2, label: "Market Intelligence", path: "/intelligence", icon: Brain },
+      { step: 3, label: "God Mode SEO", path: "/god-mode", icon: Cpu },
       { step: 4, label: "Digital Dominance", path: "/digital-dominance", icon: Globe },
-      { step: 5, label: "Name & URL Generator", path: "/", icon: Sparkles },
-      { label: "Autonomous Research Engine", path: "/research-engine", icon: Cpu },
+      { step: 5, label: "Name & Domain Intelligence", path: "/", icon: Sparkles },
+      { step: 6, label: "NearMe / NearYou Strategy", path: "/", icon: MapPin },
+      { step: 7, label: "Opportunity Ranking", path: "/research-engine", icon: Trophy },
     ],
   },
   {
-    label: "Phase 2 — Setup & Onboarding",
+    label: "Phase 2 — Simulation & Strategy",
     items: [
-      { step: 6, label: "Onboarding Pipeline", path: "/onboarding", icon: PlayCircle },
+      { step: 8, label: "Strategy Tournament", path: "/research-engine", icon: Crown },
+      { step: 9, label: "Portfolio Simulator", path: "/", icon: TrendingUp },
+      { step: 10, label: "Financial & ROI Analysis", path: "/research-engine", icon: Calculator },
+      { step: 11, label: "Ten-Strategy Comparison", path: "/research-engine", icon: Layers },
+      { step: 12, label: "Strategy Selection", path: "/seo-strategy", icon: CheckCircle },
     ],
   },
   {
-    label: "Phase 3 — Site Creation",
+    label: "Phase 3 — Auto Builder",
     items: [
-      { step: 7, label: "Visual Editor", path: "/editor", icon: Palette },
-      { step: 8, label: "Pack Review", path: "/packs", icon: Package },
-      { step: 9, label: "Programmatic Launch", path: "/launch", icon: Rocket },
+      { step: 13, label: "Business Onboarding", path: "/onboarding", icon: PlayCircle },
+      { step: 14, label: "Brand & Design System", path: "/packs", icon: Package },
+      { step: 15, label: "Website Genome", path: "/websites", icon: Database },
+      { step: 16, label: "Visual Editor", path: "/editor", icon: Palette },
+      { step: 17, label: "Pack Review", path: "/packs", icon: Package },
+      { step: 18, label: "Programmatic Launch", path: "/launch", icon: Rocket },
     ],
   },
   {
-    label: "Phase 4 — Distribution & Deployment",
+    label: "Phase 4 — Operations",
     items: [
-      { step: 10, label: "Social Media Automation", path: "/social-automation", icon: Share2 },
-      { step: 11, label: "Provisioning & Domains", path: "/provisioning", icon: Server },
-      { step: 12, label: "System Contents", path: "/contents", icon: BookOpen },
+      { step: 19, label: "SEO & Content Ops", path: "/launch", icon: FileText },
+      { step: 20, label: "Social Media Studio", path: "/social-automation", icon: Share2 },
+      { step: 21, label: "Image & Video Factory", path: "/media", icon: ImageIcon },
+      { step: 22, label: "CRM & Client OS", path: "/outreach", icon: Send },
+      { step: 23, label: "Super Agent Command", path: "/agents", icon: Bot },
+      { step: 24, label: "Analytics & A/B Testing", path: "/analytics", icon: Activity },
     ],
   },
   {
-    label: "Operations",
+    label: "Phase 5 — Validation & Release",
     items: [
-      { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-      { label: "Analytics", path: "/analytics", icon: Activity },
+      { step: 25, label: "Fault Line Validation", path: "/contents", icon: ShieldCheck },
+      { step: 26, label: "Website Preview & QA", path: "/frontend", icon: Eye },
+      { step: 27, label: "Domain Provisioning", path: "/provisioning", icon: Server },
+      { step: 28, label: "Vercel Deployment", path: "/provisioning", icon: Cloud },
+      { step: 29, label: "System Health", path: "/dominance", icon: HeartPulse },
+      { step: 30, label: "System Contents", path: "/contents", icon: BookOpen },
+    ],
+  },
+  {
+    label: "System Access",
+    items: [
       { label: "A/B Testing", path: "/ab-testing", icon: FlaskConical },
-      { label: "Website Library", path: "/websites", icon: Globe },
-      { label: "Super Agents", path: "/agents", icon: Bot },
-      { label: "Intelligence Hub", path: "/intelligence", icon: Brain },
-      { label: "Outreach", path: "/outreach", icon: Send },
-      { label: "Media Studio", path: "/media", icon: ImageIcon },
-      { label: "Dominance Shell", path: "/dominance", icon: Command },
-      { label: "GPT Sync", path: "/sync", icon: Webhook },
+      { label: "GPT System Gateway", path: "/sync", icon: Webhook },
     ],
   },
 ];
