@@ -1,0 +1,91 @@
+{
+  "name": "GodModeRun",
+  "type": "object",
+  "properties": {
+    "industry": {
+      "type": "string",
+      "title": "Industry"
+    },
+    "location": {
+      "type": "string",
+      "title": "Location Scope"
+    },
+    "market_data": {
+      "type": "string",
+      "title": "Market Research Data (JSON)"
+    },
+    "simulation_results": {
+      "type": "string",
+      "title": "Simulation Results (JSON)"
+    },
+    "strategies": {
+      "type": "string",
+      "title": "Generated Strategies (JSON)"
+    },
+    "winner": {
+      "type": "string",
+      "title": "Winner Strategy (JSON)"
+    },
+    "benchmark_ids": {
+      "type": "string",
+      "title": "Benchmark System IDs (JSON)"
+    },
+    "agent_ids": {
+      "type": "string",
+      "title": "Agent IDs Used (JSON)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "researching",
+        "simulating",
+        "complete",
+        "provisioning",
+        "provisioned",
+        "failed"
+      ],
+      "default": "researching"
+    },
+    "website_id": {
+      "type": "string",
+      "title": "Provisioned Website ID"
+    },
+    "campaign_id": {
+      "type": "string",
+      "title": "Provisioned Campaign ID"
+    },
+    "provisioning_result": {
+      "type": "string",
+      "title": "Provisioning Result (JSON)"
+    },
+    "run_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "industry"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
