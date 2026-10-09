@@ -241,7 +241,7 @@ export default function GodModeHome() {
       {/* Central search input */}
       <section className="relative z-10 flex justify-center py-10 px-4">
         <Link
-          to="/god-mode"
+          to="/god-mode-pipeline"
           className="group flex items-center gap-3 w-full max-w-xl rounded-full border border-cyan-500/30 bg-white/5 backdrop-blur-md px-6 py-4 hover:border-cyan-400/60 hover:bg-cyan-500/10 transition-all"
         >
           <Search className="w-5 h-5 text-cyan-400 shrink-0" />

@@ -54,6 +54,7 @@ import UnifiedLibrary from '@/pages/UnifiedLibrary';
 import TemplateLibrary from '@/pages/TemplateLibrary';
 import PipelineControl from '@/pages/PipelineControl';
 import GodModeHome from '@/pages/GodModeHome';
+import GodModePipeline from '@/pages/GodModePipeline';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -90,6 +91,7 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<GodModeHome />} />
+          <Route path="/god-mode-pipeline" element={<GodModePipeline />} />
           <Route path="/industries" element={<IndustryIntelligence />} />
           <Route path="/business-name" element={<BusinessNameGenerator />} />
           <Route path="/seo-strategy" element={<SeoDominanceStrategy />} />
