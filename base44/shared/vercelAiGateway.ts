@@ -75,9 +75,9 @@ export async function aiCompleteJson<T = any>(params: {
 
 // ── Image Generation ──────────────────────────────────────────
 export const IMAGE_MODELS = {
-  fast: 'openai/dall-e-3',
-  quality: 'openai/dall-e-3',
-  default: 'openai/dall-e-3',
+  fast: 'bfl/flux-3-image',
+  quality: 'bfl/flux-3-image',
+  default: 'bfl/flux-3-image',
 };
 
 export async function generateImage(params: {
