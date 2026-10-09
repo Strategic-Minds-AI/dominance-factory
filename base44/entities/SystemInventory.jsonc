@@ -1,0 +1,129 @@
+{
+  "name": "SystemInventory",
+  "type": "object",
+  "properties": {
+    "system_name": {
+      "type": "string",
+      "title": "System Name"
+    },
+    "system_type": {
+      "type": "string",
+      "enum": [
+        "entity",
+        "backend_function",
+        "workflow",
+        "connector",
+        "page",
+        "component",
+        "integration",
+        "shared_module"
+      ],
+      "title": "System Type"
+    },
+    "category": {
+      "type": "string",
+      "title": "Deterministic Category",
+      "enum": [
+        "data_storage",
+        "ai_engine",
+        "content_generation",
+        "seo_optimization",
+        "social_media",
+        "media_production",
+        "outreach_communication",
+        "provisioning_deployment",
+        "analytics_reporting",
+        "agent_orchestration",
+        "research_intelligence",
+        "workflow_automation",
+        "external_integration",
+        "ui_interface",
+        "governance_security",
+        "infrastructure"
+      ]
+    },
+    "subcategory": {
+      "type": "string",
+      "title": "Subcategory"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "capabilities": {
+      "type": "string",
+      "title": "Capabilities (JSON)"
+    },
+    "dependencies": {
+      "type": "string",
+      "title": "Dependencies (JSON)"
+    },
+    "integration_points": {
+      "type": "string",
+      "title": "Integration Points"
+    },
+    "reuse_potential": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    },
+    "classification_confidence": {
+      "type": "number",
+      "default": 100,
+      "title": "Classification Confidence (%)"
+    },
+    "last_scanned_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "draft"
+      ],
+      "default": "active"
+    },
+    "tags": {
+      "type": "string",
+      "title": "Tags"
+    },
+    "registry_key": {
+      "type": "string",
+      "title": "Registry Key (unique identifier)"
+    }
+  },
+  "required": [
+    "system_name",
+    "system_type",
+    "category",
+    "registry_key"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

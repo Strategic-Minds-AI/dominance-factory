@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { BarChart3, Crown, Globe, Sparkles, MapPin, Trophy, TrendingUp, Calculator, Layers, CheckCircle, PlayCircle, Package, Database, Palette, Rocket, FileText, Share2, ImageIcon, Send, Bot, Activity, FlaskConical, ShieldCheck, Eye, Server, Cloud, HeartPulse, BookOpen, Webhook, Cpu, Brain } from "lucide-react";
+import { BarChart3, Crown, Globe, Sparkles, MapPin, Trophy, TrendingUp, Calculator, Layers, CheckCircle, PlayCircle, Package, Database, Palette, Rocket, FileText, Share2, ImageIcon, Send, Bot, Activity, FlaskConical, ShieldCheck, Eye, Server, Cloud, HeartPulse, BookOpen, Webhook, Cpu, Brain, Scan } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AutonomousChatAgent from "@/components/AutonomousChatAgent";
 import { Library } from "lucide-react";
@@ -10,6 +10,7 @@ const navGroups = [
     label: "Phase 1 — Research & Intelligence",
     items: [
       { step: 1, label: "Industry Opportunity Scanner", path: "/industries", icon: BarChart3 },
+      { label: "Benchmark & Reverse Engineer", path: "/benchmark-engine", icon: Trophy },
       { step: 2, label: "Market Intelligence", path: "/intelligence", icon: Brain },
       { step: 3, label: "God Mode SEO", path: "/god-mode", icon: Cpu },
       { step: 4, label: "Digital Dominance", path: "/digital-dominance", icon: Globe },
@@ -72,6 +73,7 @@ const navGroups = [
     label: "System Reference",
     items: [
       { label: "Full System Library", path: "/library", icon: Library },
+      { label: "System Scanner", path: "/system-scanner", icon: Scan },
       { label: "Agent Reference", path: "/agent-reference", icon: Bot },
       { label: "Gap Analysis", path: "/gap-analysis", icon: ShieldCheck },
     ],

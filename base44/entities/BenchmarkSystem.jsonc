@@ -1,0 +1,113 @@
+{
+  "name": "BenchmarkSystem",
+  "type": "object",
+  "properties": {
+    "industry": {
+      "type": "string",
+      "title": "Industry / Market"
+    },
+    "system_name": {
+      "type": "string",
+      "title": "System Name"
+    },
+    "system_url": {
+      "type": "string",
+      "title": "System URL"
+    },
+    "ranking": {
+      "type": "number",
+      "title": "Ranking (1-3)",
+      "default": 1
+    },
+    "rating_score": {
+      "type": "number",
+      "title": "Rating Score (0-100)",
+      "default": 0
+    },
+    "rating_source": {
+      "type": "string",
+      "title": "Rating Source"
+    },
+    "key_features": {
+      "type": "string",
+      "title": "Key Features (JSON)"
+    },
+    "tech_stack": {
+      "type": "string",
+      "title": "Tech Stack"
+    },
+    "architecture_summary": {
+      "type": "string",
+      "title": "Architecture Summary"
+    },
+    "reverse_engineering_blueprint": {
+      "type": "string",
+      "title": "Reverse Engineering Blueprint (JSON)"
+    },
+    "replication_roadmap": {
+      "type": "string",
+      "title": "Replication Roadmap (JSON)"
+    },
+    "competitive_advantages": {
+      "type": "string",
+      "title": "Competitive Advantages"
+    },
+    "weaknesses": {
+      "type": "string",
+      "title": "Weaknesses / Gaps"
+    },
+    "market_position": {
+      "type": "string",
+      "title": "Market Position"
+    },
+    "internal_asset_mapping": {
+      "type": "string",
+      "title": "Internal Asset Mapping (JSON - maps benchmark features to reusable internal assets)"
+    },
+    "benchmark_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "benchmarking",
+        "benchmarked",
+        "released",
+        "failed"
+      ],
+      "default": "benchmarking"
+    },
+    "session_id": {
+      "type": "string",
+      "title": "Linked Strategy Session ID"
+    }
+  },
+  "required": [
+    "industry",
+    "system_name",
+    "ranking"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

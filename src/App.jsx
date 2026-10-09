@@ -41,6 +41,8 @@ import Analytics from '@/pages/Analytics';
 import SystemLibrary from '@/pages/SystemLibrary';
 import AgentReference from '@/pages/AgentReference';
 import SystemGapAnalysis from '@/pages/SystemGapAnalysis';
+import SystemScanner from '@/pages/SystemScanner';
+import BenchmarkEngine from '@/pages/BenchmarkEngine';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -104,6 +106,8 @@ const AuthenticatedApp = () => {
           <Route path="/library" element={<SystemLibrary />} />
           <Route path="/agent-reference" element={<AgentReference />} />
           <Route path="/gap-analysis" element={<SystemGapAnalysis />} />
+          <Route path="/system-scanner" element={<SystemScanner />} />
+          <Route path="/benchmark-engine" element={<BenchmarkEngine />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
