@@ -1,8 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
 
-const AI_GATEWAY_URL = 'https://api.openai.com/v1/chat/completions';
-const DEFAULT_MODEL = 'gpt-4o';
+const AI_GATEWAY_URL = 'https://ai-gateway.vercel.sh/v1/chat/completions';
+const DEFAULT_MODEL = 'openai/gpt-6-astra';
 
 const SYSTEM_PROMPT = `You are a helpful AI assistant (like ChatGPT) that can also edit a live HTML visual preview the user sees on the right side of their screen.
 
@@ -35,8 +35,8 @@ export default async function(req: Request): Promise<Response> {
       return Response.json({ error: 'message is required' }, { status: 400 });
     }
 
-    const apiKey = secrets.get('OPENAI_API_KEY');
-    if (!apiKey) return Response.json({ error: 'OPENAI_API_KEY not set — add it in the app dashboard Secrets page' }, { status: 500 });
+    const apiKey = secrets.get('VERCEL_AI_GATEWAY_API_KEY');
+    if (!apiKey) return Response.json({ error: 'VERCEL_AI_GATEWAY_API_KEY not set' }, { status: 500 });
 
     const messages = [
       { role: 'system', content: SYSTEM_PROMPT },
@@ -47,21 +47,31 @@ export default async function(req: Request): Promise<Response> {
       },
     ];
 
-    const response = await fetch(AI_GATEWAY_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: model || DEFAULT_MODEL,
-        messages,
-        stream: false,
-      }),
-      signal: AbortSignal.timeout(120000),
+    const requestBody = JSON.stringify({
+      model: model || DEFAULT_MODEL,
+      messages,
+      stream: false,
     });
 
-    if (!response.ok) {
+    let response;
+    let lastStatus;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      response = await fetch(AI_GATEWAY_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: requestBody,
+        signal: AbortSignal.timeout(120000),
+      });
+      lastStatus = response.status;
+      if (response.ok) break;
+      // Retry on transient gateway errors (403 rate-limit, 503, 429, 500)
+      if ([403, 429, 500, 503].includes(response.status) && attempt < 2) {
+        await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+        continue;
+      }
       const errText = await response.text();
       return Response.json({ error: `AI Gateway error: ${response.status}` }, { status: 502 });
     }
