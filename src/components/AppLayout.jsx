@@ -75,6 +75,8 @@ const navGroups = [
     items: [
       { label: "Full System Library", path: "/library", icon: Library },
       { label: "System Scanner", path: "/system-scanner", icon: Scan },
+      { label: "Self-Reflection & Repair", path: "/reflection", icon: Activity },
+      { label: "Asset Ingestion", path: "/ingestion", icon: Package },
       { label: "Agent Reference", path: "/agent-reference", icon: Bot },
       { label: "Gap Analysis", path: "/gap-analysis", icon: ShieldCheck },
     ],

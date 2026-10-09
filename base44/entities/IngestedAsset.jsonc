@@ -1,0 +1,116 @@
+{
+  "name": "IngestedAsset",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Asset Name"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "upload",
+        "zip",
+        "document",
+        "code",
+        "template",
+        "agent_pack",
+        "config",
+        "media",
+        "blueprint",
+        "other"
+      ],
+      "default": "upload",
+      "title": "Source Type"
+    },
+    "category": {
+      "type": "string",
+      "title": "Deterministic Category"
+    },
+    "subcategory": {
+      "type": "string",
+      "title": "Subcategory"
+    },
+    "file_url": {
+      "type": "string",
+      "title": "File URL"
+    },
+    "file_type": {
+      "type": "string",
+      "title": "File Type (extension)"
+    },
+    "file_size": {
+      "type": "number",
+      "title": "File Size (bytes)"
+    },
+    "content_summary": {
+      "type": "string",
+      "title": "Content Summary"
+    },
+    "extracted_metadata": {
+      "type": "string",
+      "title": "Extracted Metadata (JSON)"
+    },
+    "organization_tags": {
+      "type": "string",
+      "title": "Organization Tags (JSON array)"
+    },
+    "auto_categorized": {
+      "type": "boolean",
+      "default": true,
+      "title": "Auto-Categorized"
+    },
+    "processing_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "categorized",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "raw_content": {
+      "type": "string",
+      "title": "Raw Content (for text files)"
+    },
+    "file_count": {
+      "type": "number",
+      "default": 0,
+      "title": "File Count (for archives)"
+    },
+    "detected_systems": {
+      "type": "string",
+      "title": "Detected Systems (JSON array of system names found in the asset)"
+    },
+    "ingest_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

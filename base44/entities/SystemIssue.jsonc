@@ -1,0 +1,119 @@
+{
+  "name": "SystemIssue",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Issue Title"
+    },
+    "description": {
+      "type": "string",
+      "title": "Detailed Description"
+    },
+    "issue_type": {
+      "type": "string",
+      "enum": [
+        "gap",
+        "bug",
+        "security",
+        "performance",
+        "missing_feature",
+        "configuration",
+        "integration",
+        "empty_entity",
+        "broken_flow",
+        "missing_connector",
+        "missing_secret",
+        "rls_vulnerability"
+      ],
+      "default": "gap",
+      "title": "Issue Type"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    },
+    "component": {
+      "type": "string",
+      "title": "Affected Component"
+    },
+    "entity_name": {
+      "type": "string",
+      "title": "Related Entity Name"
+    },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved",
+        "ignored",
+        "auto_fixing"
+      ],
+      "default": "open"
+    },
+    "resolution": {
+      "type": "string",
+      "title": "Resolution Notes"
+    },
+    "auto_fixable": {
+      "type": "boolean",
+      "default": false,
+      "title": "Auto-Fixable"
+    },
+    "fix_action": {
+      "type": "string",
+      "title": "Fix Action (JSON)"
+    },
+    "fix_result": {
+      "type": "string",
+      "title": "Fix Result (JSON)"
+    },
+    "scan_id": {
+      "type": "string",
+      "title": "Linked Scan ID"
+    },
+    "fix_attempts": {
+      "type": "number",
+      "default": 0,
+      "title": "Fix Attempts"
+    }
+  },
+  "required": [
+    "title",
+    "issue_type",
+    "severity"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

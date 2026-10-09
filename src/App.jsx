@@ -44,6 +44,8 @@ import SystemGapAnalysis from '@/pages/SystemGapAnalysis';
 import SystemScanner from '@/pages/SystemScanner';
 import BenchmarkEngine from '@/pages/BenchmarkEngine';
 import BuildInitiation from '@/pages/BuildInitiation';
+import AssetIngestion from '@/pages/AssetIngestion';
+import SystemReflection from '@/pages/SystemReflection';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -110,6 +112,8 @@ const AuthenticatedApp = () => {
           <Route path="/system-scanner" element={<SystemScanner />} />
           <Route path="/benchmark-engine" element={<BenchmarkEngine />} />
           <Route path="/build-initiation" element={<BuildInitiation />} />
+          <Route path="/ingestion" element={<AssetIngestion />} />
+          <Route path="/reflection" element={<SystemReflection />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
