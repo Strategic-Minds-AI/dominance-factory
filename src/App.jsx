@@ -46,6 +46,7 @@ import BenchmarkEngine from '@/pages/BenchmarkEngine';
 import BuildInitiation from '@/pages/BuildInitiation';
 import AssetIngestion from '@/pages/AssetIngestion';
 import SystemReflection from '@/pages/SystemReflection';
+import GoogleWorkspace from '@/pages/GoogleWorkspace';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -114,6 +115,7 @@ const AuthenticatedApp = () => {
           <Route path="/build-initiation" element={<BuildInitiation />} />
           <Route path="/ingestion" element={<AssetIngestion />} />
           <Route path="/reflection" element={<SystemReflection />} />
+          <Route path="/google-workspace" element={<GoogleWorkspace />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
