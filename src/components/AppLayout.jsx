@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Globe, Share2, Rocket, Bot, Package, Palette, Command, Brain, Send, Image as ImageIcon, Server } from "lucide-react";
+import { LayoutDashboard, Globe, Share2, Rocket, Bot, Package, Palette, Command, Brain, Send, Image as ImageIcon, Server, Webhook } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { label: "Launch Pad", path: "/launch", icon: Rocket },
   { label: "Super Agents", path: "/agents", icon: Bot },
   { label: "Pack Review", path: "/packs", icon: Package },
+  { label: "GPT Sync", path: "/sync", icon: Webhook },
   { label: "Visual Editor", path: "/editor", icon: Palette },
   { label: "Dominance Shell", path: "/dominance", icon: Command },
   { label: "Intelligence Hub", path: "/intelligence", icon: Brain },

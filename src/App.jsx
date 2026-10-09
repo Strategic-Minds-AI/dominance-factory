@@ -24,6 +24,7 @@ import IntelligenceHub from '@/pages/IntelligenceHub';
 import OutreachManager from '@/pages/OutreachManager';
 import MediaGenerator from '@/pages/MediaGenerator';
 import ProvisioningDashboard from '@/pages/ProvisioningDashboard';
+import GptSync from '@/pages/GptSync';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -70,6 +71,7 @@ const AuthenticatedApp = () => {
           <Route path="/outreach" element={<OutreachManager />} />
           <Route path="/media" element={<MediaGenerator />} />
           <Route path="/provisioning" element={<ProvisioningDashboard />} />
+          <Route path="/sync" element={<GptSync />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
