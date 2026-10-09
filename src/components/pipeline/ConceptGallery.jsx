@@ -1,0 +1,13 @@
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Check, Eye } from 'lucide-react';
+export default function ConceptGallery({ designs, previews, onApprove, canApprove, busy, selected }) {
+  const [preview, setPreview] = useState(null);
+  return <div className="space-y-4"><p className="text-sm text-muted-foreground">Ten draft concepts, not ten deployed websites. Choose a concept at the approval gate; no purchases or publishing happen here.</p><div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">{designs.map(d => <article className="overflow-hidden rounded-lg border border-border bg-secondary/30" key={d.index}>
+    <div className="h-44 overflow-hidden bg-card" aria-hidden="true"><iframe title={d.name + ' thumbnail'} srcDoc={previews.find(p => p.index === d.index)?.html} sandbox="" tabIndex={-1} className="pointer-events-none h-96 w-full border-0" /></div>
+    <div className="space-y-3 p-4"><div className="flex items-center justify-between"><h3 className="text-sm font-semibold">{d.index + 1}. {d.name}</h3>{selected === d.index && <Check className="h-4 w-4" />}</div><p className="text-xs leading-relaxed text-muted-foreground">{d.positioning}</p><p className="text-[10px] text-muted-foreground">Composition source: {d.source}</p><div className="flex flex-wrap gap-2"><Button type="button" variant="outline" size="sm" onClick={() => setPreview(d)}><Eye /> Preview</Button>{canApprove && <Button type="button" size="sm" disabled={busy} onClick={() => onApprove(d.index)}>Approve This Design</Button>}</div></div>
+  </article>)}</div>
+    <Dialog open={!!preview} onOpenChange={open => !open && setPreview(null)}><DialogContent className="pipeline-surface max-h-[90vh] max-w-5xl overflow-y-auto bg-card text-card-foreground"><DialogTitle>{preview?.name}</DialogTitle><DialogDescription>Responsive concept preview with in-page navigation. No scripts can execute; full-page previews are available after the draft build.</DialogDescription>{preview && <iframe title={preview.name + ' full preview'} srcDoc={previews.find(p => p.index === preview.index)?.html} sandbox="" className="h-[65vh] w-full rounded-md border border-border" />}{canApprove && <Button disabled={busy} onClick={async () => { const result = await onApprove(preview.index); if (result) setPreview(null); }}>Approve This Design & Generate Drafts</Button>}</DialogContent></Dialog>
+  </div>;
+}

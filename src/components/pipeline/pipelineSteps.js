@@ -1,0 +1,13 @@
+export const PIPELINE_STEPS = [
+  { key: 'vision', title: 'Vision', phase: 'Start', description: 'Tell the assistant who you are, your business, your goals, and whether to build new, enhance or rebrand. Choose manual or autonomous operation.' },
+  { key: 'research', title: 'Research', phase: 'Phase 1', description: 'Research your public business footprint and industry with your consent. Save source links, measurement scope and missing evidence without inventing facts about you.' },
+  { key: 'benchmark', title: 'Benchmarks', phase: 'Phase 1', description: 'Compare public competitor features, adjacent niches and opportunities. Carry the entire saved business brief and research into an original build strategy.' },
+  { key: 'simulate', title: 'God Mode', phase: 'Phase 2', description: 'Use a seeded Monte Carlo engine to compare three financial scenarios. Check source quotations first; disclose every modelling assumption and withhold forecasts when metrics are missing.' },
+  { key: 'designs', title: '10 Concepts', phase: 'Phase 3', description: 'Send the compounded brief, research, benchmarks and scenario disclosure through your AI Gateway to generate ten distinct, business-specific website proposals.' },
+  { key: 'approval', title: 'Approval', phase: 'Phase 3', description: 'You choose a concept. Save who approved it and its exact fingerprint. Approval authorizes draft generation only, not purchases, publishing or messages.' },
+  { key: 'draft', title: 'Build Drafts', phase: 'Phase 3', description: 'Generate five responsive pages from the exact approved concept. Save them into your website library as drafts, with no pretend deployment, client portal or checkout.' },
+  { key: 'release', title: 'Provision', phase: 'Release gate', description: 'Locked until deployment, domain ownership, spending limits, PWA/client/admin portal implementation and independent release acceptance are connected.' },
+  { key: 'social', title: 'Social', phase: 'Connection gate', description: 'Requires account-specific publishing permissions, a real media-rendering worker and posting receipts. A thirty-day content plan alone is not published content.' },
+  { key: 'operate', title: 'Operate 24/7', phase: 'Operations gate', description: 'Requires scoped agents, durable workers, monitored analytics, consent-aware SMS/MMS/email/voice, Stripe and a measured optimization loop.' }
+];
+export const stepTitle = key => PIPELINE_STEPS.find(s => s.key === key)?.title || key;

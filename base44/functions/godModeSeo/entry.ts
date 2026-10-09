@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { aiCompleteJson, aiComplete, MODELS } from '../../shared/vercelAiGateway.ts';
 import { generateStrategies, pickWinner } from '../../shared/godModeEngine.ts';
-import { makeSlug, makeCompositeKey } from '../../shared/pageGeneration.ts';
+import { researchBusiness, checkMetric, requireMarketEvidence } from '../../shared/pipelineEvidence.ts';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GodModeSeo — Xtreme SEO Optimizer with God Mode
@@ -116,48 +116,12 @@ Return JSON: {
       return Response.json({ strategy: result });
     }
 
-    // ── Action: run_simulations — Monte Carlo SEO strategy simulations ──
+    // Numerical scenarios only: an LLM must not invent simulation outcomes.
     if (action === 'run_simulations') {
-      const { industry, url, iterations } = body;
-      const numIterations = Math.min(iterations || 50, 200);
-
-      const strategies = [
-        'NearMe Exact-Match Domain', 'Programmatic City Pages', 'Content Authority Hub',
-        'Backlink Blitz', 'Local SEO Domination', 'AI Overview Optimization',
-        'Schema-First Architecture', 'Speed-First (Core Web Vitals)', 'Social Signal Amplification', 'Hybrid Multi-Channel',
-      ];
-
-      const result = await aiCompleteJson({
-        model: MODELS.research,
-        messages: [
-          { role: 'system', content: 'You are an expert SEO simulation engine. You run Monte Carlo simulations on SEO strategies to predict ranking outcomes. Return ONLY valid JSON.' },
-          { role: 'user', content: `Run ${numIterations} Monte Carlo simulations for each of these SEO strategies applied to the "${industry}" industry:
-${JSON.stringify(strategies)}
-
-For each strategy, simulate the probability of achieving page-1 Google rankings within 3, 6, and 12 months. Consider variables like competition, content quality, backlink velocity, domain authority, and algorithm updates.
-
-Return JSON: {
-  "simulations": [{
-    "strategy": "...",
-    "iterations": ${numIterations},
-    "p_page1_3mo": 25,
-    "p_page1_6mo": 55,
-    "p_page1_12mo": 80,
-    "expected_traffic_12mo": 5000,
-    "expected_leads_12mo": 150,
-    "expected_revenue_12mo": 22500,
-    "confidence": "P10-P90 range",
-    "winner": false
-  }],
-  "winner": "the strategy with highest probability of page-1 in 6 months",
-  "summary": "brief analysis of why the winner dominates"
-}` },
-        ],
-        temperature: 0.3,
-        max_tokens: 4096,
-      });
-
-      return Response.json({ simulations: result.simulations || [], winner: result.winner, summary: result.summary });
+      if (!body.market_data) return Response.json({ error: 'Source-checked market inputs are required. Use the Connected Pipeline; AI-invented ranking probabilities are disabled.' }, { status: 422 });
+      requireMarketEvidence(body.market_data);
+      const strategies = generateStrategies(body.market_data); const winner = pickWinner(strategies);
+      return Response.json({ simulations: strategies.map(s => ({ strategy: s.name, iterations: s.simulation.iterations, p10: s.simulation.p10, p50: s.simulation.p50, p90: s.simulation.p90, p_page1_3mo: null, p_page1_6mo: null, p_page1_12mo: null, winner: s.name === winner.name })), winner: winner.name, summary: 'Seeded financial scenarios, not verified predictions of Google rankings.' });
     }
 
     // ── Action: generate_seo_plan — Full programmatic SEO/AEO/GEO plan ──
@@ -400,70 +364,8 @@ Return JSON: {
       return Response.json({ piggybacks: result.piggybacks || [], network_strategy: result.network_strategy, total_est_traffic: result.total_est_traffic, total_est_revenue: result.total_est_revenue });
     }
 
-    // ── Action: simulate_programmatic_scaling — 10 to 2000 websites projection ──
     if (action === 'simulate_programmatic_scaling') {
-      const { industry, url, base_strategy } = body;
-      const scales = [10, 50, 100, 200, 300, 400, 500, 1000, 2000];
-
-      const result = await aiCompleteJson({
-        model: MODELS.complex,
-        messages: [
-          { role: 'system', content: 'You are an expert programmatic SEO scaling strategist. You know exactly what happens when you scale websites according to Google\'s exact recommendations. Return ONLY valid JSON.' },
-          { role: 'user', content: `Simulate what happens when scaling programmatic websites in the "${industry}" industry from 10 to 2000 sites, all built according to Google's exact recommendations (E-E-A-T, Helpful Content, Core Web Vitals, proper schema, unique content per page).
-
-Base URL pattern: ${url || '[niche]nearme.com'}
-Base strategy: ${base_strategy || 'NearMe exact-match domains + programmatic city/service pages'}
-
-For EACH scale level (10, 50, 100, 200, 300, 400, 500, 1000, 2000), provide:
-1. Total pages across all sites (avg 50 pages per site)
-2. Estimated total monthly traffic
-3. Estimated total monthly leads
-4. Estimated total monthly revenue
-5. Estimated time to achieve full rankings
-6. Google penalty risk level (low/medium/high) and why
-7. Infrastructure cost estimate (monthly)
-8. Content production cost (one-time)
-9. Net monthly profit estimate
-10. Key risks at this scale
-11. What Google will do (reward, flag, or penalize) and why
-12. Recommended action (scale more / hold / diversify)
-
-Also provide:
-- The "sweet spot" scale (best ROI before diminishing returns)
-- The "danger zone" scale (where Google penalties become likely)
-- The overall recommendation
-
-Return JSON: {
-  "simulations": [{
-    "site_count": 10,
-    "total_pages": 500,
-    "est_monthly_traffic": 5000,
-    "est_monthly_leads": 150,
-    "est_monthly_revenue": 22500,
-    "time_to_full_rankings": "3-4 months",
-    "penalty_risk": "low",
-    "penalty_risk_reason": "...",
-    "infra_cost_monthly": 50,
-    "content_cost_onetime": 5000,
-    "net_monthly_profit": 22000,
-    "key_risks": "...",
-    "google_action": "reward",
-    "google_action_reason": "...",
-    "recommendation": "scale more"
-  }],
-  "sweet_spot": 200,
-  "sweet_spot_reason": "...",
-  "danger_zone": 1000,
-  "danger_zone_reason": "...",
-  "overall_recommendation": "...",
-  "google_compliance_notes": "how to stay compliant at every scale"
-}` },
-        ],
-        temperature: 0.4,
-        max_tokens: 8192,
-      });
-
-      return Response.json({ simulations: result.simulations || [], sweet_spot: result.sweet_spot, sweet_spot_reason: result.sweet_spot_reason, danger_zone: result.danger_zone, danger_zone_reason: result.danger_zone_reason, overall_recommendation: result.overall_recommendation, google_compliance_notes: result.google_compliance_notes });
+      return Response.json({ error: 'Portfolio projections require verified demand per distinct market, conversion measurements and approved infrastructure costs. AI-invented scale forecasts are disabled; use the audited pipeline.' }, { status: 422 });
     }
 
     // ── Action: estimate_time_to_page1 — Time estimator with NearMe benefit ──
@@ -505,196 +407,20 @@ Return JSON: {
       return Response.json({ estimate: result });
     }
 
-    // ── Action: god_mode_full — Real research + simulation + strategy + winner ──
-    if (action === 'god_mode_full') {
-      const { industry, location } = body;
-      if (!industry) return Response.json({ error: 'Industry is required' }, { status: 400 });
-
-      // Stage 1: Real market research via web search (Perplexity Sonar)
-      const rawMarketData = await aiCompleteJson({
-        model: MODELS.websearch,
-        messages: [{
-          role: 'user',
-          content: `Search the web for REAL market data about the "${industry}" industry for local SEO in ${location || 'the United States'}.
-
-You MUST return numeric values for every field. If you cannot find an exact number, estimate based on the search results. NEVER return null or 0.
-
-Return ONLY this JSON:
-{
-  "industry": "${industry}",
-  "monthly_search_volume": <NUMBER, e.g. 500000>,
-  "avg_cpc": <NUMBER in USD, e.g. 15.50>,
-  "lead_value": <NUMBER in USD, e.g. 5000>,
-  "competition_level": "<low|medium|high|very_high>",
-  "cities_available": <NUMBER, e.g. 500>,
-  "top_competitors": ["3-5 names"],
-  "keyword_examples": ["5-8 keywords with volume, e.g. 'roofing near me (90500/mo)'"],
-  "niche_description": "2-3 sentences"
-}
-
-For "${industry}": monthly_search_volume is typically 100K-1M for local services. avg_cpc is $5-$50. lead_value is $200-$10,000. cities_available is 300-900.`
-        }],
-        temperature: 0.3,
-        max_tokens: 4096,
-        online: true,
-      });
-
-      // Post-process: extract numbers from keyword examples if main fields are missing
-      const marketData = { ...rawMarketData, industry: rawMarketData.industry || industry };
-      if ((!marketData.monthly_search_volume || marketData.monthly_search_volume < 1000) && marketData.keyword_examples?.length) {
-        let totalVol = 0;
-        for (const kw of marketData.keyword_examples) {
-          const match = String(kw).match(/([\d,]+)\s*(?:searches|\/mo|per\s*month|\/month)/i);
-          if (match) totalVol += parseInt(match[1].replace(/,/g, ''), 10);
-        }
-        if (totalVol > 0) marketData.monthly_search_volume = totalVol;
-      }
-      if (!marketData.monthly_search_volume || marketData.monthly_search_volume < 1000) marketData.monthly_search_volume = 300000;
-      if (!marketData.avg_cpc || marketData.avg_cpc <= 0) marketData.avg_cpc = 15;
-      if (!marketData.lead_value || marketData.lead_value <= 0) marketData.lead_value = 1000;
-      if (!marketData.cities_available || marketData.cities_available < 10) marketData.cities_available = 500;
-      if (!marketData.competition_level) marketData.competition_level = 'medium';
-
-      // Stage 2: Pull existing benchmarks from database
-      const benchmarks = await base44.asServiceRole.entities.BenchmarkSystem.filter(
-        { industry: { $regex: industry, $options: 'i' } },
-        { limit: 5, fields: ['system_name', 'rating_score', 'key_features', 'weaknesses', 'competitive_advantages'] }
-      );
-
-      // Stage 3: Pull existing agents from database
-      const agents = await base44.asServiceRole.entities.Agent.filter(
-        { status: { $ne: 'error' } },
-        { limit: 10, fields: ['name', 'agent_type', 'status', 'capabilities'] }
-      );
-
-      // Stage 4: Run REAL Monte Carlo simulation for 3 strategies
-      const strategies = generateStrategies(marketData);
-
-      // Stage 5: Pick winner (best risk-adjusted ROI)
-      const winner = pickWinner(strategies);
-
-      // Stage 6: Save to GodModeRun entity
-      const run = await base44.asServiceRole.entities.GodModeRun.create({
-        industry,
-        location: location || 'United States',
-        market_data: JSON.stringify(marketData),
-        simulation_results: JSON.stringify(strategies.map(s => ({ name: s.name, simulation: s.simulation, total_cost: s.total_cost, roi_p50: s.roi_p50 }))),
-        strategies: JSON.stringify(strategies.map(s => ({
-          name: s.name,
-          page_count: s.page_count,
-          cities: s.cities,
-          services_per_city: s.services_per_city,
-          total_cost: s.total_cost,
-          roi_p50: s.roi_p50,
-          p10: s.simulation.p10,
-          p50: s.simulation.p50,
-          p90: s.simulation.p90,
-        }))),
-        winner: JSON.stringify({
-          name: winner.name,
-          page_count: winner.page_count,
-          cities: winner.cities,
-          total_cost: winner.total_cost,
-          roi_p50: winner.roi_p50,
-          p50: winner.simulation.p50,
-        }),
-        benchmark_ids: JSON.stringify(benchmarks.items.map((b: any) => b.id)),
-        agent_ids: JSON.stringify(agents.items.map((a: any) => a.id)),
-        status: 'complete',
-        run_date: new Date().toISOString(),
-      });
-
-      return Response.json({
-        run_id: run.id,
-        industry,
-        market_data: marketData,
-        benchmarks: benchmarks.items,
-        agents: agents.items,
-        strategies: strategies.map(s => ({
-          name: s.name,
-          page_count: s.page_count,
-          cities: s.cities,
-          total_cost: s.total_cost,
-          roi_p50: s.roi_p50,
-          p10: s.simulation.p10,
-          p50: s.simulation.p50,
-          p90: s.simulation.p90,
-          monthly_projection: s.simulation.monthly_projection,
-          assumptions: s.simulation.assumptions,
-        })),
-        winner: {
-          name: winner.name,
-          page_count: winner.page_count,
-          cities: winner.cities,
-          total_cost: winner.total_cost,
-          roi_p50: winner.roi_p50,
-          p50: winner.simulation.p50,
-          p90: winner.simulation.p90,
-          monthly_projection: winner.simulation.monthly_projection,
-        },
-      });
+    // Source-backed research; unknown values stay unknown.
+    if (action === 'god_mode_full' || action === 'god_mode_research') {
+      if (!body.industry) return Response.json({ error: 'Industry is required' }, { status: 400 });
+      const research = await researchBusiness({ business_name: body.business_name || body.industry, industry: String(body.industry).slice(0, 200), location: String(body.location || 'United States').slice(0, 200), vision: '', public_research_consent: true });
+      if (action === 'god_mode_research') return Response.json({ search_query: research.query, market_data: research.market_data, sources: research.sources, limitations: research.limitations });
+      body.market_data = research.market_data;
     }
 
-    // ── Action: god_mode_research — Stage 1: Real web search for market data ──
-    if (action === 'god_mode_research') {
+    // Source-checked inputs feed the same seeded numeric engine as the pipeline.
+    if (action === 'god_mode_simulate' || action === 'god_mode_full') {
       const { industry, location } = body;
-      if (!industry) return Response.json({ error: 'Industry is required' }, { status: 400 });
-
-      const searchQuery = `"${industry}" local SEO market data: monthly search volume, average CPC, lead value, competition level, top keywords, top competitors in ${location || 'United States'}`;
-
-      const rawMarketData = await aiCompleteJson({
-        model: MODELS.websearch,
-        messages: [{
-          role: 'user',
-          content: `Search the web for REAL market data about the "${industry}" industry for local SEO in ${location || 'the United States'}.
-
-You MUST return numeric values for every field. If you cannot find an exact number, estimate based on the search results. NEVER return null or 0.
-
-Return ONLY this JSON:
-{
-  "industry": "${industry}",
-  "monthly_search_volume": <NUMBER, e.g. 500000>,
-  "avg_cpc": <NUMBER in USD, e.g. 15.50>,
-  "lead_value": <NUMBER in USD, e.g. 5000>,
-  "competition_level": "<low|medium|high|very_high>",
-  "cities_available": <NUMBER, e.g. 500>,
-  "top_competitors": ["3-5 names"],
-  "keyword_examples": ["5-8 keywords with volume, e.g. 'roofing near me (90500/mo)'"],
-  "niche_description": "2-3 sentences"
-}
-
-For "${industry}": monthly_search_volume is typically 100K-1M for local services. avg_cpc is $5-$50. lead_value is $200-$10,000. cities_available is 300-900.`
-        }],
-        temperature: 0.3,
-        max_tokens: 4096,
-        online: true,
-      });
-
-      const marketData = { ...rawMarketData, industry: rawMarketData.industry || industry };
-      if ((!marketData.monthly_search_volume || marketData.monthly_search_volume < 1000) && marketData.keyword_examples?.length) {
-        let totalVol = 0;
-        for (const kw of marketData.keyword_examples) {
-          const match = String(kw).match(/([\d,]+)\s*(?:searches|\/mo|per\s*month|\/month)/i);
-          if (match) totalVol += parseInt(match[1].replace(/,/g, ''), 10);
-        }
-        if (totalVol > 0) marketData.monthly_search_volume = totalVol;
-      }
-      if (!marketData.monthly_search_volume || marketData.monthly_search_volume < 1000) marketData.monthly_search_volume = 300000;
-      if (!marketData.avg_cpc || marketData.avg_cpc <= 0) marketData.avg_cpc = 15;
-      if (!marketData.lead_value || marketData.lead_value <= 0) marketData.lead_value = 1000;
-      if (!marketData.cities_available || marketData.cities_available < 10) marketData.cities_available = 500;
-      if (!marketData.competition_level) marketData.competition_level = 'medium';
-
-      return Response.json({
-        search_query: searchQuery,
-        market_data: marketData,
-      });
-    }
-
-    // ── Action: god_mode_simulate — Stage 2: Load system data + run Monte Carlo ──
-    if (action === 'god_mode_simulate') {
-      const { market_data, industry, location } = body;
-      if (!market_data) return Response.json({ error: 'market_data is required' }, { status: 400 });
+      if (!body.market_data) return Response.json({ error: 'market_data is required' }, { status: 400 });
+      const market_data = { ...body.market_data, evidence: await Promise.all((body.market_data.evidence || []).slice(0, 3).map(checkMetric)) };
+      requireMarketEvidence(market_data);
 
       const benchmarks = await base44.asServiceRole.entities.BenchmarkSystem.filter(
         { industry: { $regex: industry, $options: 'i' } },
@@ -840,167 +566,9 @@ Structure a complete website that will achieve these results. Return JSON:
       });
     }
 
-    // ── Action: provision_winner — Create website, launch campaign, queue pages ──
+    // A forecast is not a deployment or release authorization.
     if (action === 'provision_winner') {
-      const { run_id, strategy_name } = body;
-      if (!run_id) return Response.json({ error: 'run_id is required' }, { status: 400 });
-
-      const run = await base44.asServiceRole.entities.GodModeRun.get(run_id);
-      if (!run) return Response.json({ error: 'Run not found' }, { status: 404 });
-
-      await base44.asServiceRole.entities.GodModeRun.update(run_id, { status: 'provisioning' });
-
-      const marketData = JSON.parse(run.market_data || '{}');
-      const strategies = JSON.parse(run.strategies || '[]');
-      const winner = strategies.find((s: any) => s.name === strategy_name) || JSON.parse(run.winner || '{}');
-
-      // Step 1: Generate website template HTML via AI Gateway
-      const templateHtml = await aiComplete({
-        model: MODELS.complex,
-        messages: [{
-          role: 'user',
-          content: `Generate a complete, production-ready HTML landing page template for a "${marketData.industry}" service business.
-
-Requirements:
-1. Modern, clean, responsive design (mobile-first)
-2. Hero section with compelling headline and CTA
-3. Services section with 3-4 service cards
-4. Why Choose Us section with 3 trust signals
-5. Testimonial section
-6. Contact form section
-7. Proper <title>, <meta name="description">, and schema.org LocalBusiness structured data
-8. Use placeholder tokens like {{CITY}}, {{SERVICE}}, {{BUSINESS_NAME}} that will be replaced per page
-9. Include internal link patterns: <a href="/{{CITY_SLUG}}/{{SERVICE_SLUG}}"> for related pages
-10. Dark, professional color scheme with a primary accent color
-11. Return ONLY the complete HTML document — no markdown, no explanations
-
-The template will be used to generate ${winner.page_count} pages across ${winner.cities} cities.`
-        }],
-        temperature: 0.4,
-        max_tokens: 8192,
-      });
-
-      // Step 2: Generate brand tokens
-      const brandTokens = await aiCompleteJson({
-        model: MODELS.research,
-        messages: [{
-          role: 'user',
-          content: `Generate brand tokens (colors, fonts) for a "${marketData.industry}" website. Return JSON: {"colors": {"primary": "#hex", "secondary": "#hex", "accent": "#hex", "background": "#hex", "text": "#hex"}, "fonts": {"heading": "font-name", "body": "font-name"}}`
-        }],
-        temperature: 0.3,
-        max_tokens: 1024,
-      });
-
-      // Step 3: Generate real US city list and service list
-      const locationsResult = await aiCompleteJson({
-        model: MODELS.research,
-        messages: [{
-          role: 'user',
-          content: `List exactly ${winner.cities} major US cities suitable for "${marketData.industry}" services. Choose cities with population over 50,000, spread across different states. Return JSON: {"cities": ["City, ST", "City, ST", ...]}`
-        }],
-        temperature: 0.3,
-        max_tokens: 4096,
-      });
-
-      const servicesResult = await aiCompleteJson({
-        model: MODELS.research,
-        messages: [{
-          role: 'user',
-          content: `List the top 5 most common "${marketData.industry}" services that customers search for. Return JSON: {"services": ["Service 1", "Service 2", ...]}`
-        }],
-        temperature: 0.3,
-        max_tokens: 1024,
-      });
-
-      const cities = (locationsResult.cities || []).slice(0, winner.cities);
-      const services = (servicesResult.services || []).slice(0, 5);
-
-      // Step 4: Create Website record (truncate HTML to fit entity field limits)
-      const cleanIndustry = marketData.industry.toLowerCase().replace(/[^a-z0-9]/g, '');
-      const truncatedHtml = templateHtml.length > 15000 ? templateHtml.substring(0, 15000) + '\n<!-- template truncated for storage; full page generated per-location -->' : templateHtml;
-      const website = await base44.asServiceRole.entities.Website.create({
-        name: `${marketData.industry} — ${winner.name} Strategy`,
-        category: 'local_service',
-        status: 'approved',
-        preview_html: truncatedHtml,
-        url_pattern: `${cleanIndustry}nearme.com`,
-        brand_tokens: JSON.stringify(brandTokens),
-        description: `Auto-generated by God Mode. ${winner.name} strategy: ${winner.page_count} pages across ${winner.cities} cities. Projected P50 profit: $${winner.p50?.profit_12mo?.toLocaleString() || 0}/yr.`,
-      });
-
-      // Step 5: Create LaunchCampaign
-      const campaign = await base44.asServiceRole.entities.LaunchCampaign.create({
-        name: `God Mode — ${winner.name} — ${marketData.industry}`,
-        status: 'running',
-        total_pages: cities.length * services.length,
-        pages_generated: 0,
-        started_at: new Date().toISOString(),
-        config: JSON.stringify({
-          locations: cities,
-          services,
-          website_ids: [website.id],
-          strategy: winner.name,
-          god_mode_run_id: run_id,
-        }),
-      });
-
-      // Step 6: Create page records (queued for generation)
-      const pages: any[] = [];
-      for (const loc of cities) {
-        for (const svc of services) {
-          pages.push({
-            campaign_id: campaign.id,
-            website_id: website.id,
-            location: loc,
-            service: svc,
-            url_slug: makeSlug(loc, svc),
-            composite_key: makeCompositeKey(website.id, loc, svc),
-            status: 'generating',
-            compliance_score: 0,
-          });
-        }
-      }
-
-      let pagesQueued = 0;
-      for (let i = 0; i < pages.length; i += 500) {
-        const batch = pages.slice(i, i + 500);
-        try {
-          await base44.asServiceRole.entities.GeneratedPage.bulkCreate(batch);
-          pagesQueued += batch.length;
-        } catch {
-          try {
-            await base44.asServiceRole.entities.GeneratedPage.upsert(batch, { key: 'composite_key' });
-            pagesQueued += batch.length;
-          } catch (e2) {
-            console.error(`Batch insert failed at offset ${i}:`, e2.message);
-          }
-        }
-      }
-
-      // Step 7: Update campaign and GodModeRun
-      await base44.asServiceRole.entities.LaunchCampaign.update(campaign.id, { pages_generated: pagesQueued });
-      await base44.asServiceRole.entities.GodModeRun.update(run_id, {
-        status: 'provisioned',
-        website_id: website.id,
-        campaign_id: campaign.id,
-        provisioning_result: JSON.stringify({
-          website_id: website.id,
-          campaign_id: campaign.id,
-          pages_queued: pagesQueued,
-          cities: cities.length,
-          services: services.length,
-        }),
-      });
-
-      return Response.json({
-        status: 'provisioned',
-        website_id: website.id,
-        campaign_id: campaign.id,
-        pages_queued: pagesQueued,
-        cities: cities.length,
-        services: services.length,
-        url_pattern: website.url_pattern,
-      });
+      return Response.json({ error: 'Launch is gated. Use the connected pipeline to select and approve a design; independent release checks and a live deployment receipt are required.', pipeline_path: '/pipeline' }, { status: 409 });
     }
 
     // ── Action: get_runs — List past God Mode runs ──

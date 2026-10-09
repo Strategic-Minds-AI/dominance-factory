@@ -52,6 +52,7 @@ import BackendLayout from '@/components/BackendLayout';
 import BackendDashboard from '@/pages/BackendDashboard';
 import UnifiedLibrary from '@/pages/UnifiedLibrary';
 import TemplateLibrary from '@/pages/TemplateLibrary';
+import PipelineControl from '@/pages/PipelineControl';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -91,6 +92,7 @@ const AuthenticatedApp = () => {
           <Route path="/industries" element={<IndustryIntelligence />} />
           <Route path="/seo-strategy" element={<SeoDominanceStrategy />} />
           <Route path="/onboarding" element={<OnboardingPipeline />} />
+          <Route path="/pipeline" element={<PipelineControl />} />
           <Route path="/god-mode" element={<GodModeSeo />} />
           <Route path="/digital-dominance" element={<DigitalDominance />} />
           <Route path="/research-engine" element={<AutonomousResearchEngine />} />

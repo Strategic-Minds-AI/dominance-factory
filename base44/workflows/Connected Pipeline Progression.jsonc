@@ -1,0 +1,42 @@
+{
+  "name": "Connected Pipeline Progression",
+  "description": "Runs one saved stage at a time, carries immutable outputs forward, and stops at evidence, design approval and release gates.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "PipelineRun",
+      "events": [
+        "create",
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.mode == \"autonomous\" and .trigger.data.status == \"queued\" and .trigger.data.pause_requested != true and (.trigger.old_data.status != \"queued\" or .trigger.old_data.current_step != .trigger.data.current_step) }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "connected_pipeline_progression",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "advance_stage": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "advancePipeline",
+            "args": {
+              "run_id": "${ .trigger.entity_id }",
+              "expected_step": "${ .trigger.data.current_step }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run the next saved stage",
+            "description": "Evidence and approval gates remain enforced"
+          }
+        }
+      }
+    ]
+  }
+}

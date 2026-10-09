@@ -59,10 +59,15 @@ export default function GodModeSeo() {
         location,
       });
       setSearchQuery(res.data.search_query);
-      setResearchData(res.data.market_data);
+      setResearchData({ ...res.data.market_data, sources: res.data.sources });
+      if (res.data.market_data?.data_quality !== 'source_checked') {
+        setStage(1);
+        setLoading(false);
+        setError('Financial forecasts are withheld because scope-matched, source-checked metrics are missing. Use the Connected Pipeline for design-only planning.');
+        return;
+      }
       setStage(2);
-      // Auto-advance to simulation
-      setTimeout(() => runSimulation(res.data.market_data), 800);
+      runSimulation(res.data.market_data);
     } catch (e) {
       setError(e.message);
       setStage(0);
@@ -157,14 +162,14 @@ export default function GodModeSeo() {
         {/* Header */}
         <div className="text-center mb-4">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-yellow-400 mb-2">
-            <Zap className="w-4 h-4" /> Real Data · Real Search · Real Simulation · GPT-Powered
+            <Zap className="w-4 h-4" /> Source-backed research · Seeded scenarios · Approval-gated drafts
           </div>
           <h1 className="text-2xl font-bold text-white flex items-center justify-center gap-2">
             <Crown className="w-6 h-6 text-yellow-400" /> God Mode
           </h1>
           <p className="text-sm text-white/50 mt-2 max-w-2xl mx-auto">
-            Searches the real web for market data, runs 3,000 Monte Carlo iterations with real unit economics,
-            picks the winning strategy, syncs with GPT to structure the website, then provisions it.
+            Searches the live web, keeps missing metrics unknown, and runs repeatable numerical scenarios only with source-checked inputs.
+            Predictions are not Google's algorithm or guaranteed rankings; use the Connected Pipeline to approve designs and build drafts.
           </p>
         </div>
 
@@ -221,7 +226,7 @@ export default function GodModeSeo() {
           <Card className="p-5 bg-zinc-900 border-white/10">
             <div className="flex items-center gap-2 mb-3">
               <Wifi className="w-4 h-4 text-blue-400" />
-              <h3 className="text-sm font-bold text-white">Stage 1 — Real Web Search</h3>
+              <h3 className="text-sm font-bold text-white">Stage 1 — Public Market Research</h3>
               <Badge className="text-xs bg-blue-500/10 text-blue-300 border-blue-500/20 ml-auto">Perplexity Sonar</Badge>
             </div>
             {/* Search query */}
@@ -233,15 +238,15 @@ export default function GodModeSeo() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="p-3 rounded-md bg-white/5 border border-white/10">
                 <div className="flex items-center gap-1.5 mb-1"><Globe className="w-3 h-3 text-blue-400" /><span className="text-[10px] text-gray-500 uppercase">Monthly Searches</span></div>
-                <p className="text-lg font-bold text-white">{(researchData.monthly_search_volume || 0).toLocaleString()}</p>
+                <p className="text-lg font-bold text-white">{researchData.monthly_search_volume == null ? 'Not verified' : researchData.monthly_search_volume.toLocaleString()}</p>
               </div>
               <div className="p-3 rounded-md bg-white/5 border border-white/10">
                 <div className="flex items-center gap-1.5 mb-1"><DollarSign className="w-3 h-3 text-green-400" /><span className="text-[10px] text-gray-500 uppercase">Avg CPC</span></div>
-                <p className="text-lg font-bold text-white">${researchData.avg_cpc || 0}</p>
+                <p className="text-lg font-bold text-white">{researchData.avg_cpc == null ? 'Not verified' : `$${researchData.avg_cpc}`}</p>
               </div>
               <div className="p-3 rounded-md bg-white/5 border border-white/10">
-                <div className="flex items-center gap-1.5 mb-1"><Target className="w-3 h-3 text-yellow-400" /><span className="text-[10px] text-gray-500 uppercase">Lead Value</span></div>
-                <p className="text-lg font-bold text-white">${researchData.lead_value || 0}</p>
+                <div className="flex items-center gap-1.5 mb-1"><Target className="w-3 h-3 text-yellow-400" /><span className="text-[10px] text-gray-500 uppercase">Revenue / Customer</span></div>
+                <p className="text-lg font-bold text-white">{researchData.lead_value == null ? 'Not verified' : `$${researchData.lead_value}`}</p>
               </div>
               <div className="p-3 rounded-md bg-white/5 border border-white/10">
                 <div className="flex items-center gap-1.5 mb-1"><Users className="w-3 h-3 text-purple-400" /><span className="text-[10px] text-gray-500 uppercase">Cities Available</span></div>
@@ -251,7 +256,7 @@ export default function GodModeSeo() {
             {/* Real keywords */}
             {researchData.keyword_examples?.length > 0 && (
               <div className="mt-3">
-                <p className="text-[10px] text-gray-500 uppercase mb-2">Real Keywords Found (with search volume)</p>
+                <p className="text-[10px] text-gray-500 uppercase mb-2">Research keyword proposals (not verified keyword volumes)</p>
                 <div className="flex flex-wrap gap-1">
                   {researchData.keyword_examples.map((kw, i) => (
                     <Badge key={i} variant="outline" className="text-xs text-blue-300 border-blue-500/20 bg-blue-500/5">{kw}</Badge>
@@ -334,7 +339,7 @@ export default function GodModeSeo() {
             {/* Simulation assumptions */}
             {simData.strategies?.[0]?.assumptions && (
               <Card className="p-4 bg-zinc-900 border-white/10">
-                <h3 className="text-xs font-bold text-white mb-3 flex items-center gap-2"><Activity className="w-3 h-3 text-yellow-400" /> Real Algorithm Inputs (from web search data)</h3>
+                <h3 className="text-xs font-bold text-white mb-3 flex items-center gap-2"><Activity className="w-3 h-3 text-yellow-400" /> Scenario assumptions (not measured ranking or conversion rates)</h3>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                   <div><p className="text-[10px] text-gray-500 uppercase">Time to Rank</p><p className="text-sm font-bold text-white">{simData.strategies[0].assumptions.base_time_to_rank} mo</p></div>
                   <div><p className="text-[10px] text-gray-500 uppercase">CTR</p><p className="text-sm font-bold text-white">{(simData.strategies[0].assumptions.base_ctr * 100).toFixed(1)}%</p></div>

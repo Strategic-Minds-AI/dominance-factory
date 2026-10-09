@@ -1,0 +1,8 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+export default function PipelineDrafts({ outputs, draft }) {
+  const [slug, setSlug] = useState('home'); const page = outputs['page:' + slug];
+  const download = () => { const url = URL.createObjectURL(new Blob([page.html], { type: 'text/html;charset=utf-8' })); const a = document.createElement('a'); a.href = url; a.download = slug + '.html'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
+  return <div className="space-y-4"><p className="text-sm">Five responsive draft pages are saved in your Website Library. They are not deployed, indexed, PWA-enabled or connected to a client portal yet.</p><div className="flex flex-wrap gap-2">{draft.pages.map(key => <Button key={key} variant={key === slug ? 'default' : 'outline'} onClick={() => setSlug(key)} className="capitalize">{key}</Button>)}</div>{page && <><iframe title={page.title + ' draft preview'} sandbox="" srcDoc={page.html} className="h-[520px] w-full rounded-lg border border-border" /><div className="flex flex-wrap gap-3"><Button variant="outline" onClick={download}>Download This Draft</Button><Button asChild><Link to="/websites">Open Website Library</Link></Button></div></>}<p className="text-xs text-muted-foreground">Select pages above to preview them. In-page links work inside each draft; cross-page routing is part of the deployment adapter. This isolated preview cannot access your app session.</p></div>;
+}

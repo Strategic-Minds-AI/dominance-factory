@@ -1,0 +1,108 @@
+{
+  "name": "PipelineRun",
+  "type": "object",
+  "properties": {
+    "owner_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "autonomous",
+        "manual"
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "maxLength": 8000
+    },
+    "current_step": {
+      "type": "string",
+      "enum": [
+        "research",
+        "benchmark",
+        "simulate",
+        "designs",
+        "approval",
+        "draft",
+        "release"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "manual",
+        "awaiting_approval",
+        "needs_evidence",
+        "blocked",
+        "paused",
+        "failed"
+      ]
+    },
+    "pause_requested": {
+      "type": "boolean",
+      "default": false
+    },
+    "lease_token": {
+      "type": "string"
+    },
+    "lease_until": {
+      "type": "string"
+    },
+    "selected_design": {
+      "type": "integer"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "approved_at": {
+      "type": "string"
+    },
+    "website_id": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "revision": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "owner_id",
+    "name",
+    "mode",
+    "profile",
+    "current_step",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

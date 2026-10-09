@@ -1,0 +1,58 @@
+{
+  "name": "PipelineArtifact",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "step": {
+      "type": "string"
+    },
+    "input_hash": {
+      "type": "string"
+    },
+    "output_hash": {
+      "type": "string"
+    },
+    "output": {
+      "type": "string",
+      "maxLength": 16000
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "algorithm_version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "step",
+    "input_hash",
+    "output_hash",
+    "output"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

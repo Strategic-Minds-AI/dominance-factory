@@ -44,6 +44,7 @@ const navGroups = [
   {
     label: "Quick Access",
     items: [
+      { label: "Connected Pipeline", path: "/pipeline", icon: Layers },
       { label: "Dashboard", path: "/dashboard", icon: BarChart3 },
       { label: "Unified Library", path: "/unified-library", icon: Library },
       { label: "Template Library", path: "/template-library", icon: Package },
@@ -56,22 +57,24 @@ export default function AppLayout() {
   const location = useLocation();
   return (
     <div className="flex min-h-screen bg-[#0a0a0a]">
-      <aside className="w-60 border-r border-white/10 bg-[#0a0a0a] flex flex-col shrink-0">
+      <aside className="w-16 md:w-60 border-r border-white/10 bg-[#0a0a0a] flex flex-col shrink-0">
         <div className="px-5 py-6 border-b border-white/10">
-          <h1 className="text-base font-bold tracking-tight text-white">ApexForge</h1>
-          <p className="text-xs text-gray-500 mt-0.5">Programmatic SEO Platform</p>
+          <h1 className="text-base font-bold tracking-tight text-white"><span className="hidden md:inline">ApexForge</span><span className="md:hidden">AF</span></h1>
+          <p className="hidden md:block text-xs text-gray-500 mt-0.5">Programmatic SEO Platform</p>
         </div>
         <nav className="flex-1 p-3 space-y-3 overflow-y-auto">
           {navGroups.map((group, gi) => (
             <div key={gi}>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-600 px-3 mb-1">{group.label}</p>
+              <p className="hidden md:block text-[10px] font-bold uppercase tracking-wider text-gray-600 px-3 mb-1">{group.label}</p>
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const active = location.pathname === item.path;
                   return (
                     <Link
-                      key={item.path}
+                      key={item.label}
                       to={item.path}
+                      title={item.label}
+                      aria-label={item.label}
                       className={cn(
                         "flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-all",
                         active
@@ -84,7 +87,7 @@ export default function AppLayout() {
                       ) : (
                         <item.icon className="w-4 h-4 shrink-0" />
                       )}
-                      <span className="truncate">{item.label}</span>
+                      <span className="hidden md:inline truncate">{item.label}</span>
                     </Link>
                   );
                 })}
@@ -93,7 +96,7 @@ export default function AppLayout() {
           ))}
         </nav>
       </aside>
-      <main className="flex-1 overflow-auto">
+      <main className="min-w-0 flex-1 overflow-auto">
         <Outlet />
       </main>
       <AutonomousChatAgent />

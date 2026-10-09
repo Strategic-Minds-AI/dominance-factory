@@ -3,8 +3,9 @@
 // Uses ACTUAL market data (search volume, CPC, lead value) to project
 // realistic revenue, profit, and break-even timelines.
 //
-// This is NOT synthetic. Every input comes from real web-search data.
-// Every assumption is visible. The math models actual SEO dynamics:
+// Forecasts are scenarios, NOT observed revenue or Google's ranking algorithm.
+// Inputs need provenance; conversion and ranking defaults are modelling assumptions.
+// Seeded mathematics models hypothetical SEO dynamics:
 //   indexation → ranking → traffic → leads → revenue → profit
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -75,10 +76,16 @@ function getCompetitionDefaults(competition: string) {
   }
 }
 
-// Box-Muller transform for normal distribution
-function gaussian(mean: number, stdDev: number): number {
-  const u1 = Math.max(1e-10, Math.random());
-  const u2 = Math.random();
+export function seededRandom(input: string) {
+  let state = 2166136261;
+  for (let i = 0; i < input.length; i++) state = Math.imul(state ^ input.charCodeAt(i), 16777619);
+  return () => { state += 0x6D2B79F5; let t = state; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+
+// Box-Muller, driven only by a frozen input seed.
+function gaussian(mean: number, stdDev: number, random: () => number): number {
+  const u1 = Math.max(1e-10, random());
+  const u2 = random();
   const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
   return mean + z * stdDev;
 }
@@ -88,8 +95,14 @@ function clamp(v: number, min: number): number {
 }
 
 export function runSimulation(market: MarketData, config: SimConfig, iterations = 1000): SimulationResult {
+  if (![market.monthly_search_volume, market.lead_value, market.cities_available].every(v => Number.isFinite(v) && v > 0)) throw new Error('Missing numeric market inputs; simulation withheld.');
+  iterations = Math.max(100, Math.min(5000, Math.floor(iterations)));
+  const numericInputs = { monthly_search_volume: market.monthly_search_volume, lead_value: market.lead_value, cities_available: market.cities_available, competition_level: market.competition_level };
+  const seed = JSON.stringify({ algorithm: 'seo-scenario-v2', market: numericInputs, config, iterations });
+  const random = seededRandom(seed);
   const defaults = getCompetitionDefaults(market.competition_level);
-  const searchVolumePerPage = market.monthly_search_volume / Math.max(market.cities_available, 1);
+  const coveredSearchVolume = market.monthly_search_volume * Math.min(1, config.cities / market.cities_available);
+  const searchVolumePerPage = coveredSearchVolume / Math.max(config.page_count, 1);
 
   const totalInitialCost = config.ai_cost_per_page * config.page_count + config.domain_cost_yearly;
   const monthlyRecurringCost = config.hosting_cost_monthly;
@@ -99,11 +112,11 @@ export function runSimulation(market: MarketData, config: SimConfig, iterations 
 
   for (let i = 0; i < iterations; i++) {
     // Sample from distributions centered on REAL data
-    const timeToRank = clamp(Math.round(gaussian(defaults.timeToRank, 1.5)), 1);
-    const ctr = clamp(gaussian(defaults.ctr, 0.02), 0.01);
-    const conversionRate = clamp(gaussian(defaults.conversionRate, 0.01), 0.005);
-    const closeRate = clamp(gaussian(defaults.closeRate, 0.03), 0.05);
-    const leadValue = clamp(gaussian(market.lead_value, market.lead_value * 0.2), 10);
+    const timeToRank = clamp(Math.round(gaussian(defaults.timeToRank, 1.5, random)), 1);
+    const ctr = Math.min(1, clamp(gaussian(defaults.ctr, 0.02, random), 0.01));
+    const conversionRate = Math.min(1, clamp(gaussian(defaults.conversionRate, 0.01, random), 0.005));
+    const closeRate = Math.min(1, clamp(gaussian(defaults.closeRate, 0.03, random), 0.05));
+    const leadValue = clamp(gaussian(market.lead_value, market.lead_value * 0.2, random), 0.01);
 
     let cumulativeProfit = -totalInitialCost;
     let breakEvenMonth = -1;
@@ -127,7 +140,7 @@ export function runSimulation(market: MarketData, config: SimConfig, iterations 
       const leads = traffic * conversionRate;
       const customers = leads * closeRate;
       const revenue = customers * leadValue;
-      const costs = monthlyRecurringCost + (config.domain_cost_yearly / 12);
+      const costs = monthlyRecurringCost;
       const profit = revenue - costs;
 
       cumulativeProfit += profit;
@@ -140,11 +153,11 @@ export function runSimulation(market: MarketData, config: SimConfig, iterations 
       totalTraffic += traffic;
 
       monthly.push({
-        revenue_12mo: totalRevenue,
-        profit_12mo: cumulativeProfit,
+        revenue_12mo: revenue,
+        profit_12mo: profit - (month === 1 ? totalInitialCost : 0),
         break_even_month: breakEvenMonth,
-        leads_12mo: totalLeads,
-        traffic_12mo: totalTraffic,
+        leads_12mo: leads,
+        traffic_12mo: traffic,
       });
     }
 
@@ -183,7 +196,7 @@ export function runSimulation(market: MarketData, config: SimConfig, iterations 
       traffic_p50: Math.round(median.traffic_12mo),
       leads_p50: Math.round(median.leads_12mo),
       revenue_p50: Math.round(median.revenue_12mo),
-      costs_p50: Math.round(totalInitialCost / 12 + monthlyRecurringCost + config.domain_cost_yearly / 12),
+      costs_p50: Math.round(monthlyRecurringCost + (idx === 0 ? totalInitialCost : 0)),
       profit_p50: Math.round(median.profit_12mo),
     };
   });
@@ -199,7 +212,10 @@ export function runSimulation(market: MarketData, config: SimConfig, iterations 
       base_close_rate: defaults.closeRate,
       search_volume_per_page: Math.round(searchVolumePerPage),
       total_initial_cost: Math.round(totalInitialCost),
-      monthly_recurring_cost: Math.round(monthlyRecurringCost + config.domain_cost_yearly / 12),
+      monthly_recurring_cost: Math.round(monthlyRecurringCost),
+      assumption_disclosure: 'CTR, conversion, close rate, ranking delay, hosting and generation prices are scenario assumptions, not measured statistics.',
+      demand_cap: market.monthly_search_volume,
+      algorithm_version: 'seo-scenario-v2',
     },
     monthly_projection: monthlyProjection,
     iterations,
@@ -246,9 +262,11 @@ export function generateStrategies(market: MarketData): Array<SimConfig & { simu
   });
 }
 
-// Pick winner: best risk-adjusted ROI (P50 profit / total cost)
+// Rank by downside return; stable tie-breaking is independent of AI opinion.
 export function pickWinner(strategies: any[]): any {
-  return strategies.reduce((best, current) =>
-    current.roi_p50 > best.roi_p50 ? current : best
-  );
+  if (!strategies.length) throw new Error('No strategies to compare.');
+  return [...strategies].sort((a, b) =>
+    (b.simulation.p10.profit_12mo / b.total_cost) - (a.simulation.p10.profit_12mo / a.total_cost)
+    || b.roi_p50 - a.roi_p50 || a.name.localeCompare(b.name)
+  )[0];
 }
