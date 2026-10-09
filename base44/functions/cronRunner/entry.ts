@@ -194,18 +194,52 @@ export default async function(req: Request): Promise<Response> {
       }
     }
 
+    // ── ASSET CATEGORIZE: Scan and catalog new assets into SystemInventory ──
+    if (task === 'asset_categorize') {
+      const origin = new URL(req.url).origin;
+      try {
+        const res = await fetch(`${origin}/functions/assetCategorizer`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+          signal: AbortSignal.timeout(60000),
+        });
+        const data = await res.json();
+        return Response.json({ task: 'asset_categorize', result: data, timestamp: new Date().toISOString() });
+      } catch (e) {
+        return Response.json({ task: 'asset_categorize', error: e.message, timestamp: new Date().toISOString() }, { status: 500 });
+      }
+    }
+
+    // ── GOOGLE BACKUP: Back up generated content to Drive and Sheets ──
+    if (task === 'google_backup') {
+      const origin = new URL(req.url).origin;
+      try {
+        const res = await fetch(`${origin}/functions/googleBackup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+          signal: AbortSignal.timeout(120000),
+        });
+        const data = await res.json();
+        return Response.json({ task: 'google_backup', result: data, timestamp: new Date().toISOString() });
+      } catch (e) {
+        return Response.json({ task: 'google_backup', error: e.message, timestamp: new Date().toISOString() }, { status: 500 });
+      }
+    }
+
     // ── HEALTH CHECK ──
     if (task === 'health') {
       return Response.json({
         task: 'health',
         status: 'ok',
         timestamp: new Date().toISOString(),
-        message: 'Cron runner is operational. Available tasks: system_reflection, queue_process, health, all',
+        message: 'Cron runner is operational. Available tasks: system_reflection, queue_process, asset_categorize, google_backup, health, all',
       });
     }
 
     return Response.json({
-      error: `Unknown task: "${task}". Available tasks: system_reflection, queue_process, health, all`,
+      error: `Unknown task: "${task}". Available tasks: system_reflection, queue_process, asset_categorize, google_backup, health, all`,
     }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

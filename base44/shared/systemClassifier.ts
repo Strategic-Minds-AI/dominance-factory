@@ -28,17 +28,20 @@ export const SYSTEM_REGISTRY = {
     "ContractorTechOption", "Opportunity", "SystemInventory", "BenchmarkSystem"
   ],
   functions: [
-    "autonomousResearchEngine", "chatEdit", "dailyFollowUp", "executeAgentTask",
-    "generateBusinessName", "generateMedia", "generatePage", "generateSocialContent",
-    "godModeSeo", "ingestPack", "launchCampaign", "onboardingAI",
+    "autonomousResearchEngine", "autonomousAgent", "benchmarkEngine", "buildInitiation",
+    "chatEdit", "cronRunner", "dailyFollowUp", "executeAgentTask",
+    "generateBusinessName", "generateMedia", "generateMediaDirect", "generatePage",
+    "generateSocialContent", "godModeSeo", "googleBackup", "googleWorkspace",
+    "ingestAsset", "ingestPack", "launchCampaign", "onboardingAI",
     "processGenerationQueue", "provisionApprovedPack", "provisionSystem",
-    "sendOutreach", "socialMediaEngine", "supabaseConvergence", "systemGateway",
-    "systemScanner", "benchmarkEngine"
+    "sendEmailDirect", "sendOutreach", "setupVercelCron", "socialMediaEngine",
+    "supabaseConvergence", "systemGateway", "systemMonitor", "systemReflection",
+    "systemScanner", "uploadFileDirect", "assetCategorizer"
   ],
   workflows: [
     "Generation Queue Processor", "Pack Approval Provisioning",
     "Daily Follow-Up Sequence", "Social Media Auto-Generator",
-    "Generation Queue Drain"
+    "Generation Queue Drain", "System Reflection Scanner"
   ],
   connectors: [
     "supabase", "googlecalendar", "gmail", "googledrive", "googledocs",
@@ -51,7 +54,8 @@ export const SYSTEM_REGISTRY = {
     "/launch", "/agents", "/packs", "/editor", "/dominance",
     "/intelligence", "/outreach", "/media", "/provisioning", "/sync",
     "/frontend", "/contents", "/library", "/agent-reference", "/gap-analysis",
-    "/system-scanner", "/benchmark-engine"
+    "/system-scanner", "/benchmark-engine", "/build-initiation", "/ingestion",
+    "/reflection", "/google-workspace", "/system-monitor"
   ]
 };
 

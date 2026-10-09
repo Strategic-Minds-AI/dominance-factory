@@ -47,6 +47,7 @@ import BuildInitiation from '@/pages/BuildInitiation';
 import AssetIngestion from '@/pages/AssetIngestion';
 import SystemReflection from '@/pages/SystemReflection';
 import GoogleWorkspace from '@/pages/GoogleWorkspace';
+import SystemMonitor from '@/pages/SystemMonitor';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -116,6 +117,7 @@ const AuthenticatedApp = () => {
           <Route path="/ingestion" element={<AssetIngestion />} />
           <Route path="/reflection" element={<SystemReflection />} />
           <Route path="/google-workspace" element={<GoogleWorkspace />} />
+          <Route path="/system-monitor" element={<SystemMonitor />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
