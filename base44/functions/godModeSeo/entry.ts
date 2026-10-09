@@ -251,7 +251,259 @@ Return JSON: {
       return Response.json({ targets: result.targets || [], total: result.total_targets || 0, summary: result.summary });
     }
 
-    return Response.json({ error: 'Invalid action. Use: analyze_industries, crack_algorithm, run_simulations, generate_seo_plan, discover_submission_targets' }, { status: 400 });
+    // ── Action: generate_nearme_variations — 100 NearMe.com variations of a name ──
+    if (action === 'generate_nearme_variations') {
+      const { business_name, industry } = body;
+      const cleanName = (business_name || industry || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      // Generate 100 deterministic variations
+      const prefixes = ['', 'best', 'top', 'find', 'get', 'the', 'your', 'my', 'pro', 'expert', 'elite', 'prime', 'apex', 'summit', 'peak', 'fast', 'quick', 'affordable', 'cheap', 'quality', 'trusted', 'local', 'nearby', 'closest', 'nearest'];
+      const suffixes = ['nearme', 'near me', 'near-me', 'nearyou', 'near you', 'near-you', 'near', 'nearby', 'closest', 'nearest'];
+      const tlds = ['com', 'net', 'org', 'co', 'io', 'us', 'biz'];
+      const cityModifiers = ['miami', 'orlando', 'tampa', 'jacksonville', 'atlanta', 'dallas', 'houston', 'phoenix', 'denver', 'seattle', 'chicago', 'nyc', 'la', 'sf', 'boston', 'austin', 'nashville', 'charlotte', 'raleigh', 'columbus'];
+
+      const variations = [];
+      let id = 1;
+
+      // Pattern 1: [name]nearme.com (base)
+      for (const tld of tlds) {
+        variations.push({ id: id++, domain: `${cleanName}nearme.${tld}`, pattern: `${cleanName}nearme.${tld}`, type: 'exact_nearme' });
+      }
+
+      // Pattern 2: [prefix][name]nearme.com
+      for (const prefix of prefixes.slice(1, 11)) {
+        for (const tld of ['com', 'net', 'co']) {
+          variations.push({ id: id++, domain: `${prefix}${cleanName}nearme.${tld}`, pattern: `${prefix}${cleanName}nearme.${tld}`, type: 'prefix_nearme' });
+        }
+      }
+
+      // Pattern 3: [name]nearyou.com
+      for (const tld of tlds) {
+        variations.push({ id: id++, domain: `${cleanName}nearyou.${tld}`, pattern: `${cleanName}nearyou.${tld}`, type: 'nearyou' });
+      }
+
+      // Pattern 4: [name]near.com
+      for (const tld of ['com', 'net', 'co']) {
+        variations.push({ id: id++, domain: `${cleanName}near.${tld}`, pattern: `${cleanName}near.${tld}`, type: 'near' });
+      }
+
+      // Pattern 5: [city][name]nearme.com
+      for (const city of cityModifiers.slice(0, 10)) {
+        variations.push({ id: id++, domain: `${city}${cleanName}nearme.com`, pattern: `${city}${cleanName}nearme.com`, type: 'city_nearme' });
+      }
+
+      // Pattern 6: [name][city]nearme.com
+      for (const city of cityModifiers.slice(10, 20)) {
+        variations.push({ id: id++, domain: `${cleanName}${city}nearme.com`, pattern: `${cleanName}${city}nearme.com`, type: 'name_city_nearme' });
+      }
+
+      // Pattern 7: [name]nearme[service].com
+      const services = ['pros', 'expert', 'services', 'company', 'solutions', 'contractor', 'specialist', 'pro', 'hq', 'now'];
+      for (const svc of services) {
+        for (const tld of ['com', 'net']) {
+          variations.push({ id: id++, domain: `${cleanName}nearme${svc}.${tld}`, pattern: `${cleanName}nearme${svc}.${tld}`, type: 'nearme_service' });
+        }
+      }
+
+      // Pattern 8: [name] + near me as separate words in URL
+      for (const tld of ['com', 'net', 'co']) {
+        variations.push({ id: id++, domain: `${cleanName}-near-me.${tld}`, pattern: `${cleanName}-near-me.${tld}`, type: 'hyphenated' });
+      }
+
+      // Pattern 9: get[name]nearme / find[name]nearme
+      for (const verb of ['get', 'find', 'hire', 'book']) {
+        variations.push({ id: id++, domain: `${verb}${cleanName}nearme.com`, pattern: `${verb}${cleanName}nearme.com`, type: 'verb_nearme' });
+      }
+
+      // Pattern 10: [name]nearme.[city] variations
+      for (const city of cityModifiers.slice(0, 5)) {
+        variations.push({ id: id++, domain: `${cleanName}nearme${city}.com`, pattern: `${cleanName}nearme${city}.com`, type: 'nearme_city' });
+      }
+
+      // Deduplicate and take first 100
+      const seen = new Set();
+      const unique = variations.filter(v => {
+        if (seen.has(v.domain)) return false;
+        seen.add(v.domain);
+        return true;
+      }).slice(0, 100);
+
+      // AI score the top 20 for SEO potential
+      const topToScore = unique.slice(0, 20);
+      const scored = await aiCompleteJson({
+        model: MODELS.research,
+        messages: [
+          { role: 'system', content: 'You are an expert SEO domain analyst. Score NearMe domain variations for Google ranking potential. Return ONLY valid JSON.' },
+          { role: 'user', content: `Score these NearMe domain variations for "${business_name || industry}" on SEO potential (0-100), estimated monthly searches, and commercial intent. Return JSON: {"scores": [{"domain": "...", "seo_score": 85, "search_volume": 5000, "commercial_intent": "high", "nearme_advantage": "why this ranks fast"}]}
+Domains: ${JSON.stringify(topToScore.map(v => v.domain))}` },
+        ],
+        temperature: 0.3,
+        max_tokens: 2048,
+      });
+
+      const scoreMap = {};
+      for (const s of (scored.scores || [])) {
+        scoreMap[s.domain] = s;
+      }
+
+      const enriched = unique.map(v => ({
+        ...v,
+        ...(scoreMap[v.domain] || {}),
+      }));
+
+      return Response.json({ variations: enriched, total: enriched.length, business_name: business_name || industry });
+    }
+
+    // ── Action: generate_piggyback — Name + other industries piggyback system ──
+    if (action === 'generate_piggyback') {
+      const { business_name, industry, url } = body;
+      const result = await aiCompleteJson({
+        model: MODELS.complex,
+        messages: [
+          { role: 'system', content: 'You are an expert cross-industry SEO strategist. You know how to piggyback one business name across multiple industries to dominate Google. Return ONLY valid JSON.' },
+          { role: 'user', content: `Create a piggyback strategy for "${business_name}" in the "${industry}" industry with URL "${url}".
+
+The piggyback system takes the chosen business name and applies it to OTHER related industries to create a network of dominating sites. For each piggyback target:
+
+1. The piggyback industry (related but different from the original)
+2. The piggyback URL (using the same name + new industry modifier)
+3. Why this industry is a good piggyback target
+4. How the original site's authority transfers to the piggyback site
+5. Cross-linking strategy between the original and piggyback sites
+6. Estimated additional traffic from the piggyback
+7. Estimated additional revenue
+8. Time to page 1 for the piggyback site (faster because of transferred authority)
+
+Generate 15 piggyback targets.
+
+Return JSON: {
+  "piggybacks": [{
+    "industry": "...",
+    "url": "...",
+    "reasoning": "...",
+    "authority_transfer": "how authority flows from original",
+    "cross_linking": "how to link the sites",
+    "est_traffic": 3000,
+    "est_revenue": 15000,
+    "time_to_page1": "3-4 months (faster due to authority transfer)"
+  }],
+  "network_strategy": "overall strategy for the piggyback network",
+  "total_est_traffic": 45000,
+  "total_est_revenue": 225000
+}` },
+        ],
+        temperature: 0.5,
+        max_tokens: 4096,
+      });
+      return Response.json({ piggybacks: result.piggybacks || [], network_strategy: result.network_strategy, total_est_traffic: result.total_est_traffic, total_est_revenue: result.total_est_revenue });
+    }
+
+    // ── Action: simulate_programmatic_scaling — 10 to 2000 websites projection ──
+    if (action === 'simulate_programmatic_scaling') {
+      const { industry, url, base_strategy } = body;
+      const scales = [10, 50, 100, 200, 300, 400, 500, 1000, 2000];
+
+      const result = await aiCompleteJson({
+        model: MODELS.complex,
+        messages: [
+          { role: 'system', content: 'You are an expert programmatic SEO scaling strategist. You know exactly what happens when you scale websites according to Google\'s exact recommendations. Return ONLY valid JSON.' },
+          { role: 'user', content: `Simulate what happens when scaling programmatic websites in the "${industry}" industry from 10 to 2000 sites, all built according to Google's exact recommendations (E-E-A-T, Helpful Content, Core Web Vitals, proper schema, unique content per page).
+
+Base URL pattern: ${url || '[niche]nearme.com'}
+Base strategy: ${base_strategy || 'NearMe exact-match domains + programmatic city/service pages'}
+
+For EACH scale level (10, 50, 100, 200, 300, 400, 500, 1000, 2000), provide:
+1. Total pages across all sites (avg 50 pages per site)
+2. Estimated total monthly traffic
+3. Estimated total monthly leads
+4. Estimated total monthly revenue
+5. Estimated time to achieve full rankings
+6. Google penalty risk level (low/medium/high) and why
+7. Infrastructure cost estimate (monthly)
+8. Content production cost (one-time)
+9. Net monthly profit estimate
+10. Key risks at this scale
+11. What Google will do (reward, flag, or penalize) and why
+12. Recommended action (scale more / hold / diversify)
+
+Also provide:
+- The "sweet spot" scale (best ROI before diminishing returns)
+- The "danger zone" scale (where Google penalties become likely)
+- The overall recommendation
+
+Return JSON: {
+  "simulations": [{
+    "site_count": 10,
+    "total_pages": 500,
+    "est_monthly_traffic": 5000,
+    "est_monthly_leads": 150,
+    "est_monthly_revenue": 22500,
+    "time_to_full_rankings": "3-4 months",
+    "penalty_risk": "low",
+    "penalty_risk_reason": "...",
+    "infra_cost_monthly": 50,
+    "content_cost_onetime": 5000,
+    "net_monthly_profit": 22000,
+    "key_risks": "...",
+    "google_action": "reward",
+    "google_action_reason": "...",
+    "recommendation": "scale more"
+  }],
+  "sweet_spot": 200,
+  "sweet_spot_reason": "...",
+  "danger_zone": 1000,
+  "danger_zone_reason": "...",
+  "overall_recommendation": "...",
+  "google_compliance_notes": "how to stay compliant at every scale"
+}` },
+        ],
+        temperature: 0.4,
+        max_tokens: 8192,
+      });
+
+      return Response.json({ simulations: result.simulations || [], sweet_spot: result.sweet_spot, sweet_spot_reason: result.sweet_spot_reason, danger_zone: result.danger_zone, danger_zone_reason: result.danger_zone_reason, overall_recommendation: result.overall_recommendation, google_compliance_notes: result.google_compliance_notes });
+    }
+
+    // ── Action: estimate_time_to_page1 — Time estimator with NearMe benefit ──
+    if (action === 'estimate_time_to_page1') {
+      const { industry, url, has_nearme, location, site_count } = body;
+      const result = await aiCompleteJson({
+        model: MODELS.research,
+        messages: [
+          { role: 'system', content: 'You are an expert SEO timeline estimator. You know exactly how long it takes to reach Google page 1 based on domain type, industry, and strategy. Return ONLY valid JSON.' },
+          { role: 'user', content: `Estimate time to Google page 1 for:
+Industry: ${industry}
+URL: ${url || 'TBD'}
+Has NearMe in URL: ${has_nearme ? 'YES' : 'NO'}
+Location: ${location || 'national'}
+Number of sites: ${site_count || 1}
+
+Provide TWO estimates:
+1. WITHOUT NearMe (standard SEO approach)
+2. WITH NearMe (exact-match NearMe domain)
+
+For each:
+- Time to page 1 (in months)
+- Time to top 3
+- Time to #1
+- Traffic at month 3, 6, 12
+- The NearMe advantage (how much faster/better)
+- Key milestones
+
+Return JSON: {
+  "without_nearme": {"time_to_page1": "6-8 months", "time_to_top3": "10-12 months", "time_to_number1": "14-18 months", "traffic_m3": 500, "traffic_m6": 2000, "traffic_m12": 5000},
+  "with_nearme": {"time_to_page1": "2-3 months", "time_to_top3": "4-6 months", "time_to_number1": "8-10 months", "traffic_m3": 2000, "traffic_m6": 8000, "traffic_m12": 20000},
+  "nearme_advantage": {"page1_faster_by": "4 months", "traffic_12mo_multiplier": 4, "summary": "NearMe domains rank 2x faster..."},
+  "milestones": [{"month": 1, "milestone": "..."}, {"month": 3, "milestone": "..."}, {"month": 6, "milestone": "..."}, {"month": 12, "milestone": "..."}]
+}` },
+        ],
+        temperature: 0.3,
+        max_tokens: 2048,
+      });
+      return Response.json({ estimate: result });
+    }
+
+    return Response.json({ error: 'Invalid action. Use: analyze_industries, crack_algorithm, run_simulations, generate_seo_plan, discover_submission_targets, generate_nearme_variations, generate_piggyback, simulate_programmatic_scaling, estimate_time_to_page1' }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

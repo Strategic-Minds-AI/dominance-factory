@@ -227,7 +227,86 @@ Return JSON: {
       return Response.json({ recommendation: result });
     }
 
-    return Response.json({ error: 'Invalid action. Use: generate_names, generate_urls, check_availability, optimize_url' }, { status: 400 });
+    // ── Action: generate_top30 — Combines all strategy session context to generate top 30 names+URLs ──
+    if (action === 'generate_top30') {
+      const { industry, location, god_mode_strategy, digital_dominance_targets, business_name_hint } = body;
+
+      const contextStr = [
+        industry ? `Industry: ${industry}` : '',
+        location ? `Location: ${location}` : '',
+        god_mode_strategy ? `God Mode Strategy: ${JSON.stringify(god_mode_strategy).slice(0, 2000)}` : '',
+        digital_dominance ? `Digital Dominance Targets: ${(digital_dominance_targets || []).length} submission targets identified` : '',
+      ].filter(Boolean).join('\n');
+
+      const result = await aiCompleteJson({
+        model: MODELS.complex,
+        messages: [
+          { role: 'system', content: 'You are the ultimate SEO business name and URL strategist. You combine industry intelligence, Google algorithm cracking strategies, and digital dominance data to generate the PERFECT business names and URLs. You know NearMe.com patterns, piggyback strategies, and exact-match domain advantages. Return ONLY valid JSON.' },
+          { role: 'user', content: `Using ALL the accumulated strategy context below, generate the TOP 30 business names and URLs that are perfectly chosen for Google domination.
+
+CONTEXT:
+${contextStr}
+
+Business name hint (if any): ${business_name_hint || 'none'}
+
+For each of the 30 names+URLs:
+1. Business name (memorable, SEO-optimized, brandable)
+2. URL (prefer .com with NearMe/NearYou pattern)
+3. URL pattern type (nearme, nearyou, exact_match, local_modifier, phrase)
+4. SEO score (0-100)
+5. Commercial intent (low/medium/high/very_high)
+6. Why this name+URL will dominate Google
+7. Google algorithm advantage (how it cracks a specific ranking factor)
+8. Estimated time to page 1
+9. NearMe benefit score (0-100, how much the NearMe pattern helps)
+10. Piggyback potential (can this name expand to other industries?)
+
+Rank them from #1 (best) to #30. The top 5 should be NearMe.com patterns.
+
+Return JSON: {
+  "top30": [{
+    "rank": 1,
+    "business_name": "...",
+    "url": "...",
+    "pattern_type": "nearme",
+    "seo_score": 95,
+    "commercial_intent": "very_high",
+    "reasoning": "...",
+    "google_advantage": "...",
+    "time_to_page1": "2-3 months",
+    "nearme_benefit": 95,
+    "piggyback_potential": "high"
+  }]
+}` },
+        ],
+        temperature: 0.6,
+        max_tokens: 8192,
+      });
+
+      const top30 = result.top30 || [];
+
+      // Check availability for the top 10
+      const top10Domains = top30.slice(0, 10).map((t: any) => t.url);
+      const availabilityResults: any[] = [];
+      for (const domain of top10Domains) {
+        const check = await checkDomainAvailability(domain);
+        availabilityResults.push({ domain, ...check });
+      }
+
+      // Enrich top30 with availability
+      const enriched = top30.map((t: any) => {
+        const avail = availabilityResults.find(a => a.domain === t.url);
+        return {
+          ...t,
+          availability: avail?.available,
+          registration_price: avail?.price || 0,
+        };
+      });
+
+      return Response.json({ top30: enriched, total: enriched.length, available_count: enriched.filter((t: any) => t.availability === true).length });
+    }
+
+    return Response.json({ error: 'Invalid action. Use: generate_names, generate_urls, check_availability, optimize_url, generate_top30' }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
