@@ -84,7 +84,7 @@ const navGroups = [
 export default function AppLayout() {
   const location = useLocation();
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-[#0a0a0a]">
       <aside className="w-60 border-r border-white/10 bg-[#0a0a0a] flex flex-col shrink-0">
         <div className="px-5 py-6 border-b border-white/10">
           <h1 className="text-base font-bold tracking-tight text-white">ApexForge</h1>
