@@ -27,6 +27,7 @@ import MediaGenerator from '@/pages/MediaGenerator';
 import ProvisioningDashboard from '@/pages/ProvisioningDashboard';
 import GptSync from '@/pages/GptSync';
 import FrontendPreview from '@/pages/FrontendPreview';
+import OnboardingPipeline from '@/pages/OnboardingPipeline';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -76,6 +77,7 @@ const AuthenticatedApp = () => {
           <Route path="/provisioning" element={<ProvisioningDashboard />} />
           <Route path="/sync" element={<GptSync />} />
           <Route path="/frontend" element={<FrontendPreview />} />
+          <Route path="/onboarding" element={<OnboardingPipeline />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

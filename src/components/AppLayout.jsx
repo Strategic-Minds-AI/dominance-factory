@@ -13,6 +13,7 @@ const navItems = [
   { label: "GPT Sync", path: "/sync", icon: Webhook },
   { label: "Visual Editor", path: "/editor", icon: Palette },
   { label: "Dominance Shell", path: "/dominance", icon: Command },
+  { label: "Onboarding Pipeline", path: "/onboarding", icon: Command },
   { label: "Intelligence Hub", path: "/intelligence", icon: Brain },
   { label: "Outreach", path: "/outreach", icon: Send },
   { label: "Media Studio", path: "/media", icon: ImageIcon },

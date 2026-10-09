@@ -1,0 +1,106 @@
+{
+  "name": "OnboardingSession",
+  "type": "object",
+  "properties": {
+    "session_label": {
+      "type": "string",
+      "title": "Session Label"
+    },
+    "full_name": {
+      "type": "string",
+      "title": "Full Name"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email Address"
+    },
+    "business_address": {
+      "type": "string",
+      "title": "Business Address"
+    },
+    "business_type": {
+      "type": "string",
+      "title": "Business Type",
+      "enum": [
+        "new_business",
+        "ai_enhanced",
+        "rebrand"
+      ],
+      "default": "new_business"
+    },
+    "vision_statement": {
+      "type": "string",
+      "title": "Vision Statement"
+    },
+    "selected_topic": {
+      "type": "string",
+      "title": "Selected Research Topic"
+    },
+    "topic_options": {
+      "type": "string",
+      "title": "Topic Options (JSON)"
+    },
+    "skip_trace_results": {
+      "type": "string",
+      "title": "Skip Trace Results (JSON)"
+    },
+    "skip_trace_status": {
+      "type": "string",
+      "title": "Skip Trace Status",
+      "enum": [
+        "pending",
+        "running",
+        "complete",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "compounded_context": {
+      "type": "string",
+      "title": "Compounded Context (JSON)"
+    },
+    "current_step": {
+      "type": "number",
+      "title": "Current Step",
+      "default": 1
+    },
+    "status": {
+      "type": "string",
+      "title": "Session Status",
+      "enum": [
+        "in_progress",
+        "completed"
+      ],
+      "default": "in_progress"
+    }
+  },
+  "required": [
+    "session_label"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
