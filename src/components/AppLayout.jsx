@@ -2,6 +2,8 @@ import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { BarChart3, Crown, Globe, Sparkles, MapPin, Trophy, TrendingUp, Calculator, Layers, CheckCircle, PlayCircle, Package, Database, Palette, Rocket, FileText, Share2, ImageIcon, Send, Bot, Activity, FlaskConical, ShieldCheck, Eye, Server, Cloud, HeartPulse, BookOpen, Webhook, Cpu, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AutonomousChatAgent from "@/components/AutonomousChatAgent";
+import { Library } from "lucide-react";
 
 const navGroups = [
   {
@@ -66,6 +68,14 @@ const navGroups = [
       { label: "GPT System Gateway", path: "/sync", icon: Webhook },
     ],
   },
+  {
+    label: "System Reference",
+    items: [
+      { label: "Full System Library", path: "/library", icon: Library },
+      { label: "Agent Reference", path: "/agent-reference", icon: Bot },
+      { label: "Gap Analysis", path: "/gap-analysis", icon: ShieldCheck },
+    ],
+  },
 ];
 
 export default function AppLayout() {
@@ -112,6 +122,7 @@ export default function AppLayout() {
       <main className="flex-1 overflow-auto">
         <Outlet />
       </main>
+      <AutonomousChatAgent />
     </div>
   );
 }

@@ -38,6 +38,9 @@ import AutonomousResearchEngine from '@/pages/AutonomousResearchEngine';
 import SocialMediaAutomation from '@/pages/SocialMediaAutomation';
 import ABTesting from '@/pages/ABTesting';
 import Analytics from '@/pages/Analytics';
+import SystemLibrary from '@/pages/SystemLibrary';
+import AgentReference from '@/pages/AgentReference';
+import SystemGapAnalysis from '@/pages/SystemGapAnalysis';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -98,6 +101,9 @@ const AuthenticatedApp = () => {
           <Route path="/sync" element={<GptSync />} />
           <Route path="/frontend" element={<FrontendPreview />} />
           <Route path="/contents" element={<SystemContents />} />
+          <Route path="/library" element={<SystemLibrary />} />
+          <Route path="/agent-reference" element={<AgentReference />} />
+          <Route path="/gap-analysis" element={<SystemGapAnalysis />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
