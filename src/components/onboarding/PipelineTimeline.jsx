@@ -1,13 +1,15 @@
 import React from "react";
-import { User, Eye, Search, Brain, Rocket, Check } from "lucide-react";
+import { User, Eye, ShieldCheck, Search, Brain, LayoutGrid, BookOpen, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
   { number: 1, label: "Onboarding", icon: User },
   { number: 2, label: "Vision", icon: Eye },
-  { number: 3, label: "Topics", icon: Search },
-  { number: 4, label: "Research", icon: Brain },
-  { number: 5, label: "Strategy", icon: Rocket },
+  { number: 3, label: "Google SEO", icon: ShieldCheck },
+  { number: 4, label: "Topics", icon: Search },
+  { number: 5, label: "Research", icon: Brain },
+  { number: 6, label: "Blueprint", icon: LayoutGrid },
+  { number: 7, label: "Contents", icon: BookOpen },
 ];
 
 export default function PipelineTimeline({ currentStep, completedSteps, onStepClick }) {
@@ -65,7 +67,7 @@ export default function PipelineTimeline({ currentStep, completedSteps, onStepCl
                 <div
                   className={cn(
                     "mx-0.5 h-0.5 w-3 shrink-0 rounded-full sm:mx-1 sm:w-5",
-                    isCompleted || (isCurrent && i < currentStep - 1) ? "bg-green-500" : "bg-white/10"
+                    isCompleted ? "bg-green-500" : "bg-white/10"
                   )}
                 />
               )}

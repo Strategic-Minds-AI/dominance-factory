@@ -1,10 +1,12 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Globe, Share2, Rocket, Bot, Package, Palette, Command, Brain, Send, Image as ImageIcon, Server, Webhook } from "lucide-react";
+import { LayoutDashboard, Globe, Share2, Rocket, Bot, Package, Palette, Command, Brain, Send, Image as ImageIcon, Server, Webhook, PlayCircle, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Dashboard", path: "/", icon: LayoutDashboard },
+  { label: "Onboarding Pipeline", path: "/", icon: PlayCircle },
+  { label: "System Contents", path: "/contents", icon: BookOpen },
+  { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { label: "Website Library", path: "/websites", icon: Globe },
   { label: "Social Media", path: "/social", icon: Share2 },
   { label: "Launch Pad", path: "/launch", icon: Rocket },
@@ -13,7 +15,6 @@ const navItems = [
   { label: "GPT Sync", path: "/sync", icon: Webhook },
   { label: "Visual Editor", path: "/editor", icon: Palette },
   { label: "Dominance Shell", path: "/dominance", icon: Command },
-  { label: "Onboarding Pipeline", path: "/onboarding", icon: Command },
   { label: "Intelligence Hub", path: "/intelligence", icon: Brain },
   { label: "Outreach", path: "/outreach", icon: Send },
   { label: "Media Studio", path: "/media", icon: ImageIcon },

@@ -176,7 +176,42 @@ Return ONLY the JSON object.`;
       return Response.json({ results: null, raw });
     }
 
-    return Response.json({ error: 'Invalid action. Use: complete, generate_vision, discover_topics, or skip_trace' }, { status: 400 });
+    // ── Action: google_requirements (Google mandatory + recommended SEO/AEO/GEO) ──
+    if (action === 'google_requirements') {
+      const systemPrompt = `You are an expert Google SEO/AEO/GEO strategist. You know Google's mandatory and recommended requirements for building websites that achieve first-page rankings as fast as technologically possible. Return ONLY valid JSON.`;
+
+      const userPrompt = `Based on the user's business context below, generate the specific Google programmatic requirements and implementation strategy for building a website that achieves first-page Google rankings as fast as possible.
+
+User context:
+${ctxSummary}
+
+Return a JSON object with this structure:
+{
+  "business_specific_strategy": "2-3 sentence strategy for THIS specific business to achieve first-page Google rankings fastest",
+  "mandatory_compliance": [
+    {"requirement": "name of the requirement", "how_implemented": "how the system implements this for this business", "priority": "critical"}
+  ],
+  "recommended_optimizations": [
+    {"requirement": "name", "how_implemented": "how", "impact": "high/medium/low"}
+  ],
+  "aeo_requirements": [
+    {"requirement": "name", "how_implemented": "how this business can optimize for answer engines"}
+  ],
+  "geo_requirements": [
+    {"requirement": "name", "how_implemented": "how this business can optimize for generative AI engines"}
+  ],
+  "estimated_timeline": "estimated timeline to first-page rankings with this strategy"
+}
+
+Include 5-8 items in each array. Return ONLY the JSON object.`;
+
+      const raw = await callAI(apiKey, systemPrompt, userPrompt);
+      const parsed = parseJsonResponse(raw);
+      if (parsed) return Response.json({ requirements: parsed });
+      return Response.json({ requirements: null, raw });
+    }
+
+    return Response.json({ error: 'Invalid action. Use: complete, generate_vision, discover_topics, skip_trace, or google_requirements' }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
