@@ -29,6 +29,11 @@ import GptSync from '@/pages/GptSync';
 import FrontendPreview from '@/pages/FrontendPreview';
 import OnboardingPipeline from '@/pages/OnboardingPipeline';
 import SystemContents from '@/pages/SystemContents';
+import BusinessNameGenerator from '@/pages/BusinessNameGenerator';
+import IndustryIntelligence from '@/pages/IndustryIntelligence';
+import SeoDominanceStrategy from '@/pages/SeoDominanceStrategy';
+import GodModeSeo from '@/pages/GodModeSeo';
+import DigitalDominance from '@/pages/DigitalDominance';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -64,7 +69,12 @@ const AuthenticatedApp = () => {
       <Route path="/oauth/consent" element={<OAuthConsent />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<OnboardingPipeline />} />
+          <Route path="/" element={<BusinessNameGenerator />} />
+          <Route path="/industries" element={<IndustryIntelligence />} />
+          <Route path="/seo-strategy" element={<SeoDominanceStrategy />} />
+          <Route path="/onboarding" element={<OnboardingPipeline />} />
+          <Route path="/god-mode" element={<GodModeSeo />} />
+          <Route path="/digital-dominance" element={<DigitalDominance />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/websites" element={<WebsiteLibrary />} />
           <Route path="/social" element={<SocialMediaLibrary />} />
@@ -79,7 +89,6 @@ const AuthenticatedApp = () => {
           <Route path="/provisioning" element={<ProvisioningDashboard />} />
           <Route path="/sync" element={<GptSync />} />
           <Route path="/frontend" element={<FrontendPreview />} />
-          <Route path="/onboarding" element={<OnboardingPipeline />} />
           <Route path="/contents" element={<SystemContents />} />
         </Route>
       </Route>

@@ -1,24 +1,54 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Globe, Share2, Rocket, Bot, Package, Palette, Command, Brain, Send, Image as ImageIcon, Server, Webhook, PlayCircle, BookOpen } from "lucide-react";
+import { Sparkles, BarChart3, Crown, PlayCircle, Palette, Package, Rocket, Zap, Globe, Share2, Server, BookOpen, LayoutDashboard, Bot, Brain, Send, Image as ImageIcon, Command, Webhook } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { label: "Onboarding Pipeline", path: "/", icon: PlayCircle },
-  { label: "System Contents", path: "/contents", icon: BookOpen },
-  { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { label: "Website Library", path: "/websites", icon: Globe },
-  { label: "Social Media", path: "/social", icon: Share2 },
-  { label: "Launch Pad", path: "/launch", icon: Rocket },
-  { label: "Super Agents", path: "/agents", icon: Bot },
-  { label: "Pack Review", path: "/packs", icon: Package },
-  { label: "GPT Sync", path: "/sync", icon: Webhook },
-  { label: "Visual Editor", path: "/editor", icon: Palette },
-  { label: "Dominance Shell", path: "/dominance", icon: Command },
-  { label: "Intelligence Hub", path: "/intelligence", icon: Brain },
-  { label: "Outreach", path: "/outreach", icon: Send },
-  { label: "Media Studio", path: "/media", icon: ImageIcon },
-  { label: "Provisioning", path: "/provisioning", icon: Server },
+const navGroups = [
+  {
+    label: "Phase 1 — Discovery & Strategy",
+    items: [
+      { step: 1, label: "Name & URL Generator", path: "/", icon: Sparkles },
+      { step: 2, label: "Industry Intelligence", path: "/industries", icon: BarChart3 },
+      { step: 3, label: "SEO Dominance Strategy", path: "/seo-strategy", icon: Crown },
+      { step: 4, label: "Onboarding Pipeline", path: "/onboarding", icon: PlayCircle },
+    ],
+  },
+  {
+    label: "Phase 2 — Site Creation",
+    items: [
+      { step: 5, label: "Visual Editor", path: "/editor", icon: Palette },
+      { step: 6, label: "Pack Review", path: "/packs", icon: Package },
+      { step: 7, label: "Programmatic Launch", path: "/launch", icon: Rocket },
+    ],
+  },
+  {
+    label: "Phase 3 — SEO Dominance",
+    items: [
+      { step: 8, label: "God Mode SEO Optimizer", path: "/god-mode", icon: Zap },
+      { step: 9, label: "Digital Dominance", path: "/digital-dominance", icon: Crown },
+      { step: 10, label: "Social Media", path: "/social", icon: Share2 },
+    ],
+  },
+  {
+    label: "Phase 4 — Deployment",
+    items: [
+      { step: 11, label: "Provisioning & Domains", path: "/provisioning", icon: Server },
+      { step: 12, label: "System Contents", path: "/contents", icon: BookOpen },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+      { label: "Website Library", path: "/websites", icon: Globe },
+      { label: "Super Agents", path: "/agents", icon: Bot },
+      { label: "Intelligence Hub", path: "/intelligence", icon: Brain },
+      { label: "Outreach", path: "/outreach", icon: Send },
+      { label: "Media Studio", path: "/media", icon: ImageIcon },
+      { label: "Dominance Shell", path: "/dominance", icon: Command },
+      { label: "GPT Sync", path: "/sync", icon: Webhook },
+    ],
+  },
 ];
 
 export default function AppLayout() {
@@ -30,25 +60,36 @@ export default function AppLayout() {
           <h1 className="text-base font-bold tracking-tight text-white">ApexForge</h1>
           <p className="text-xs text-gray-500 mt-0.5">Programmatic SEO Platform</p>
         </div>
-        <nav className="flex-1 p-3 space-y-1">
-          {navItems.map((item) => {
-            const active = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all",
-                  active
-                    ? "bg-[#1e40af] text-white"
-                    : "text-gray-400 hover:text-white hover:bg-[#1e40af]/40 hover:ring-1 hover:ring-[#3b82f6]"
-                )}
-              >
-                <item.icon className="w-4 h-4 shrink-0" />
-                {item.label}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 p-3 space-y-3 overflow-y-auto">
+          {navGroups.map((group, gi) => (
+            <div key={gi}>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-600 px-3 mb-1">{group.label}</p>
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const active = location.pathname === item.path;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={cn(
+                        "flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-all",
+                        active
+                          ? "bg-[#1e40af] text-white"
+                          : "text-gray-400 hover:text-white hover:bg-[#1e40af]/40 hover:ring-1 hover:ring-[#3b82f6]"
+                      )}
+                    >
+                      {item.step ? (
+                        <span className={cn("flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold shrink-0", active ? "bg-white/20 text-white" : "bg-white/10 text-gray-400")}>{item.step}</span>
+                      ) : (
+                        <item.icon className="w-4 h-4 shrink-0" />
+                      )}
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
       </aside>
       <main className="flex-1 overflow-auto">

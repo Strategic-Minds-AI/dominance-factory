@@ -1,0 +1,107 @@
+{
+  "name": "NearMeCandidate",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "title": "Domain Name"
+    },
+    "niche": {
+      "type": "string",
+      "title": "Niche / Industry"
+    },
+    "pattern_type": {
+      "type": "string",
+      "enum": [
+        "nearme",
+        "near",
+        "nearyou",
+        "phrase",
+        "exact_match",
+        "local_modifier"
+      ],
+      "default": "nearme"
+    },
+    "availability_status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "unavailable",
+        "unknown",
+        "checking"
+      ],
+      "default": "unknown"
+    },
+    "registration_price": {
+      "type": "number",
+      "title": "Registration Price (USD)"
+    },
+    "demand_score": {
+      "type": "number",
+      "title": "Demand Score (0-100)",
+      "default": 0
+    },
+    "search_volume_estimate": {
+      "type": "number",
+      "title": "Estimated Monthly Search Volume",
+      "default": 0
+    },
+    "cpc_estimate": {
+      "type": "number",
+      "title": "Estimated CPC (USD)",
+      "default": 0
+    },
+    "commercial_intent": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "very_high"
+      ],
+      "default": "high"
+    },
+    "seo_score": {
+      "type": "number",
+      "title": "SEO Score (0-100)",
+      "default": 0
+    },
+    "naics_sector": {
+      "type": "string",
+      "title": "NAICS Sector"
+    },
+    "business_name": {
+      "type": "string",
+      "title": "Linked Business Name"
+    },
+    "recommended": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "domain"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
