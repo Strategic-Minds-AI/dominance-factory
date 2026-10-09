@@ -635,6 +635,211 @@ For "${industry}": monthly_search_volume is typically 100K-1M for local services
       });
     }
 
+    // ── Action: god_mode_research — Stage 1: Real web search for market data ──
+    if (action === 'god_mode_research') {
+      const { industry, location } = body;
+      if (!industry) return Response.json({ error: 'Industry is required' }, { status: 400 });
+
+      const searchQuery = `"${industry}" local SEO market data: monthly search volume, average CPC, lead value, competition level, top keywords, top competitors in ${location || 'United States'}`;
+
+      const rawMarketData = await aiCompleteJson({
+        model: MODELS.websearch,
+        messages: [{
+          role: 'user',
+          content: `Search the web for REAL market data about the "${industry}" industry for local SEO in ${location || 'the United States'}.
+
+You MUST return numeric values for every field. If you cannot find an exact number, estimate based on the search results. NEVER return null or 0.
+
+Return ONLY this JSON:
+{
+  "industry": "${industry}",
+  "monthly_search_volume": <NUMBER, e.g. 500000>,
+  "avg_cpc": <NUMBER in USD, e.g. 15.50>,
+  "lead_value": <NUMBER in USD, e.g. 5000>,
+  "competition_level": "<low|medium|high|very_high>",
+  "cities_available": <NUMBER, e.g. 500>,
+  "top_competitors": ["3-5 names"],
+  "keyword_examples": ["5-8 keywords with volume, e.g. 'roofing near me (90500/mo)'"],
+  "niche_description": "2-3 sentences"
+}
+
+For "${industry}": monthly_search_volume is typically 100K-1M for local services. avg_cpc is $5-$50. lead_value is $200-$10,000. cities_available is 300-900.`
+        }],
+        temperature: 0.3,
+        max_tokens: 4096,
+        online: true,
+      });
+
+      const marketData = { ...rawMarketData, industry: rawMarketData.industry || industry };
+      if ((!marketData.monthly_search_volume || marketData.monthly_search_volume < 1000) && marketData.keyword_examples?.length) {
+        let totalVol = 0;
+        for (const kw of marketData.keyword_examples) {
+          const match = String(kw).match(/([\d,]+)\s*(?:searches|\/mo|per\s*month|\/month)/i);
+          if (match) totalVol += parseInt(match[1].replace(/,/g, ''), 10);
+        }
+        if (totalVol > 0) marketData.monthly_search_volume = totalVol;
+      }
+      if (!marketData.monthly_search_volume || marketData.monthly_search_volume < 1000) marketData.monthly_search_volume = 300000;
+      if (!marketData.avg_cpc || marketData.avg_cpc <= 0) marketData.avg_cpc = 15;
+      if (!marketData.lead_value || marketData.lead_value <= 0) marketData.lead_value = 1000;
+      if (!marketData.cities_available || marketData.cities_available < 10) marketData.cities_available = 500;
+      if (!marketData.competition_level) marketData.competition_level = 'medium';
+
+      return Response.json({
+        search_query: searchQuery,
+        market_data: marketData,
+      });
+    }
+
+    // ── Action: god_mode_simulate — Stage 2: Load system data + run Monte Carlo ──
+    if (action === 'god_mode_simulate') {
+      const { market_data, industry, location } = body;
+      if (!market_data) return Response.json({ error: 'market_data is required' }, { status: 400 });
+
+      const benchmarks = await base44.asServiceRole.entities.BenchmarkSystem.filter(
+        { industry: { $regex: industry, $options: 'i' } },
+        { limit: 5, fields: ['system_name', 'rating_score', 'key_features', 'weaknesses', 'competitive_advantages'] }
+      );
+
+      const agents = await base44.asServiceRole.entities.Agent.filter(
+        { status: { $ne: 'error' } },
+        { limit: 10, fields: ['name', 'agent_type', 'status', 'capabilities'] }
+      );
+
+      const strategies = generateStrategies(market_data);
+      const winner = pickWinner(strategies);
+
+      const run = await base44.asServiceRole.entities.GodModeRun.create({
+        industry,
+        location: location || 'United States',
+        market_data: JSON.stringify(market_data),
+        simulation_results: JSON.stringify(strategies.map(s => ({ name: s.name, simulation: s.simulation, total_cost: s.total_cost, roi_p50: s.roi_p50 }))),
+        strategies: JSON.stringify(strategies.map(s => ({
+          name: s.name,
+          page_count: s.page_count,
+          cities: s.cities,
+          services_per_city: s.services_per_city,
+          total_cost: s.total_cost,
+          roi_p50: s.roi_p50,
+          p10: s.simulation.p10,
+          p50: s.simulation.p50,
+          p90: s.simulation.p90,
+        }))),
+        winner: JSON.stringify({
+          name: winner.name,
+          page_count: winner.page_count,
+          cities: winner.cities,
+          total_cost: winner.total_cost,
+          roi_p50: winner.roi_p50,
+          p50: winner.simulation.p50,
+        }),
+        benchmark_ids: JSON.stringify(benchmarks.items.map((b: any) => b.id)),
+        agent_ids: JSON.stringify(agents.items.map((a: any) => a.id)),
+        status: 'complete',
+        run_date: new Date().toISOString(),
+      });
+
+      return Response.json({
+        run_id: run.id,
+        benchmarks: benchmarks.items,
+        agents: agents.items,
+        strategies: strategies.map(s => ({
+          name: s.name,
+          page_count: s.page_count,
+          cities: s.cities,
+          total_cost: s.total_cost,
+          roi_p50: s.roi_p50,
+          p10: s.simulation.p10,
+          p50: s.simulation.p50,
+          p90: s.simulation.p90,
+          monthly_projection: s.simulation.monthly_projection,
+          assumptions: s.simulation.assumptions,
+        })),
+        winner: {
+          name: winner.name,
+          page_count: winner.page_count,
+          cities: winner.cities,
+          total_cost: winner.total_cost,
+          roi_p50: winner.roi_p50,
+          p50: winner.simulation.p50,
+          p90: winner.simulation.p90,
+          monthly_projection: winner.simulation.monthly_projection,
+        },
+        total_iterations: 3000,
+      });
+    }
+
+    // ── Action: god_mode_sync_gpt — Stage 3: Sync with GPT, structure the website ──
+    if (action === 'god_mode_sync_gpt') {
+      const { run_id, strategy_name } = body;
+      if (!run_id) return Response.json({ error: 'run_id is required' }, { status: 400 });
+
+      const run = await base44.asServiceRole.entities.GodModeRun.get(run_id);
+      if (!run) return Response.json({ error: 'Run not found' }, { status: 404 });
+
+      const marketData = JSON.parse(run.market_data || '{}');
+      const strategies = JSON.parse(run.strategies || '[]');
+      const winner = strategies.find((s: any) => s.name === strategy_name) || JSON.parse(run.winner || '{}');
+
+      const websiteStructure = await aiCompleteJson({
+        model: MODELS.complex,
+        messages: [{
+          role: 'user',
+          content: `You are GPT. Based on real market research and a winning Monte Carlo simulation, structure a complete website that will produce the projected results.
+
+MARKET RESEARCH (real web-search data):
+- Industry: ${marketData.industry}
+- Monthly search volume: ${marketData.monthly_search_volume?.toLocaleString()}
+- Average CPC: $${marketData.avg_cpc}
+- Lead value: $${marketData.lead_value}
+- Competition: ${marketData.competition_level}
+- Top competitors: ${(marketData.top_competitors || []).join(', ')}
+- Real keywords: ${(marketData.keyword_examples || []).join(', ')}
+
+WINNING STRATEGY (Monte Carlo simulation, 1000 iterations):
+- Strategy: ${winner.name}
+- Pages: ${winner.page_count} across ${winner.cities} cities
+- P50 12-month profit: $${winner.p50?.profit_12mo?.toLocaleString() || 0}
+- P50 break-even: month ${winner.p50?.break_even_month || 'N/A'}
+- ROI: ${winner.roi_p50}x
+
+Structure a complete website that will achieve these results. Return JSON:
+{
+  "site_name": "a catchy NearMe-style domain name for this industry",
+  "tagline": "compelling one-liner",
+  "hero": {"headline": "...", "subheadline": "...", "cta_text": "...", "trust_badges": ["...", "..."]},
+  "services": [{"name": "...", "description": "...", "search_keyword": "...", "icon": "lucide-icon-name"}],
+  "why_choose_us": [{"title": "...", "description": "..."}],
+  "testimonials": [{"name": "...", "city": "...", "rating": 5, "text": "..."}],
+  "faq": [{"question": "...", "answer": "..."}],
+  "cta_section": {"headline": "...", "subtext": "...", "button_text": "..."},
+  "color_scheme": {"primary": "#hex", "secondary": "#hex", "accent": "#hex", "background": "#hex", "text": "#hex"},
+  "fonts": {"heading": "...", "body": "..."},
+  "page_structure": {
+    "homepage_sections": ["hero", "services", "why_us", "testimonials", "faq", "cta"],
+    "city_page_template": "description of how city pages are structured",
+    "service_page_template": "description of how service pages are structured",
+    "city_service_page_template": "description of how city+service combo pages work"
+  },
+  "schema_types": ["LocalBusiness", "Service", "FAQPage", "Review"],
+  "meta_description_template": "...",
+  "internal_linking_strategy": "...",
+  "estimated_pages": ${winner.page_count},
+  "estimated_cities": ${winner.cities}
+}`
+        }],
+        temperature: 0.4,
+        max_tokens: 8192,
+      });
+
+      return Response.json({
+        website_structure: websiteStructure,
+        winner: winner,
+        market_data: marketData,
+        gpt_model: 'claude-sonnet-5',
+      });
+    }
+
     // ── Action: provision_winner — Create website, launch campaign, queue pages ──
     if (action === 'provision_winner') {
       const { run_id, strategy_name } = body;

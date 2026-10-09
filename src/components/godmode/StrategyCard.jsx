@@ -75,7 +75,7 @@ export default function StrategyCard({ strategy, isWinner, onProvision, provisio
         </div>
       )}
 
-      {isWinner && (
+      {isWinner && onProvision && (
         <Button
           onClick={onProvision}
           disabled={provisioning}
