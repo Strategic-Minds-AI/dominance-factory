@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { RefreshCw, Clock, CheckCircle, XCircle, Package, Inbox } from 'lucide-react';
 import PackCard from '@/components/packs/PackCard';
 import PackPreview from '@/components/packs/PackPreview';
+import GptSyncInfo from '@/components/packs/GptSyncInfo';
 
 const FILTERS = [
   { key: 'pending_review', label: 'Pending', icon: Clock },
@@ -147,14 +148,15 @@ export default function PackReview() {
         {loading ? (
           <div className="text-center py-12 text-muted-foreground">Loading packs...</div>
         ) : packs.length === 0 ? (
-          <Card className="p-12 text-center">
-            <Inbox className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-            <p className="text-muted-foreground font-medium">No packs in this view yet.</p>
-            <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
-              POST to <code className="bg-muted px-1 rounded">/functions/ingestPack</code> with
-              your sync token to submit a pack from GPT or any external tool.
-            </p>
-          </Card>
+          <div className="space-y-6">
+            <Card className="p-12 text-center">
+              <Inbox className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+              <p className="text-muted-foreground font-medium">No packs in this view yet.</p>
+            </Card>
+            <div className="max-w-2xl mx-auto">
+              <GptSyncInfo />
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {packs.map((pack) => (
