@@ -46,6 +46,7 @@ const navGroups = [
     items: [
       { label: "Dashboard", path: "/dashboard", icon: BarChart3 },
       { label: "Unified Library", path: "/unified-library", icon: Library },
+      { label: "Template Library", path: "/template-library", icon: Package },
       { label: "Backend Operations", path: "/backend/dashboard", icon: Server },
     ],
   },

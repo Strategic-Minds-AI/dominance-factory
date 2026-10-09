@@ -51,6 +51,7 @@ import SystemMonitor from '@/pages/SystemMonitor';
 import BackendLayout from '@/components/BackendLayout';
 import BackendDashboard from '@/pages/BackendDashboard';
 import UnifiedLibrary from '@/pages/UnifiedLibrary';
+import TemplateLibrary from '@/pages/TemplateLibrary';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -102,6 +103,7 @@ const AuthenticatedApp = () => {
           <Route path="/benchmark-engine" element={<BenchmarkEngine />} />
           <Route path="/build-initiation" element={<BuildInitiation />} />
           <Route path="/unified-library" element={<UnifiedLibrary />} />
+          <Route path="/template-library" element={<TemplateLibrary />} />
         </Route>
         <Route element={<BackendLayout />}>
           <Route path="/backend/dashboard" element={<BackendDashboard />} />
