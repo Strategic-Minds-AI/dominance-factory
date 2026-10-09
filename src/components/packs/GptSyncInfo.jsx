@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Copy, Check, Terminal, Webhook } from 'lucide-react';
 
-const ENDPOINT_URL = 'https://legal-lead-logic.base44.app/functions/ingestPack';
+const ENDPOINT_URL = 'https://build-scale-dominate.base44.app/functions/ingestPack';
 
 const CURL_EXAMPLE = `curl -X POST ${ENDPOINT_URL} \\
   -H "Content-Type: application/json" \\
