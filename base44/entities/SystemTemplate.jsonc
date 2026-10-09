@@ -13,27 +13,60 @@
     "template_type": {
       "type": "string",
       "enum": [
+        "base44_app",
+        "template_pack",
+        "factory_blueprint",
+        "browser_agent",
+        "governance_system",
         "marketplace",
-        "website_system",
-        "code_base",
-        "blueprint",
-        "cloud_browser",
         "leads_system",
+        "social_media",
         "portfolio",
+        "website_builder",
+        "agent_system",
         "other"
       ],
       "default": "other"
     },
+    "category": {
+      "type": "string",
+      "title": "Category Group",
+      "enum": [
+        "Deployable Apps",
+        "Template Packs",
+        "Architecture & Blueprints",
+        "Browser & Agent Systems",
+        "Marketplace Systems",
+        "Lead Generation",
+        "Social Media",
+        "Portfolio",
+        "Other"
+      ],
+      "default": "Other"
+    },
     "description": {
       "type": "string",
       "title": "Description"
+    },
+    "file_count": {
+      "type": "number",
+      "title": "File Count"
+    },
+    "tech_stack": {
+      "type": "string",
+      "title": "Tech Stack"
+    },
+    "key_features": {
+      "type": "string",
+      "title": "Key Features"
     },
     "status": {
       "type": "string",
       "enum": [
         "stored",
         "deployed",
-        "archived"
+        "archived",
+        "duplicate"
       ],
       "default": "stored"
     },

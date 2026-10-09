@@ -68,7 +68,10 @@ export default function EntityDataTable({ entityName, columns, searchFields, tit
                 {records.map((record, i) => (
                   <tr key={record.id || i} className="border-t border-border hover:bg-muted/30">
                     {columns.map(col => (
-                      <td key={col.key} className="px-4 py-2 whitespace-nowrap max-w-xs overflow-hidden text-ellipsis">
+                      <td key={col.key} className={col.wrap
+                        ? "px-4 py-2 max-w-[280px] text-sm leading-snug"
+                        : "px-4 py-2 whitespace-nowrap max-w-xs overflow-hidden text-ellipsis"
+                      }>
                         {col.render ? col.render(record) : (record[col.key] != null ? String(record[col.key]) : "—")}
                       </td>
                     ))}

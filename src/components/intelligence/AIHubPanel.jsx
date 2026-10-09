@@ -67,11 +67,14 @@ const SUB_TABS = [
     entity: "SystemTemplate",
     columns: [
       { key: "name", label: "Name" },
-      { key: "template_type", label: "Type" },
+      { key: "category", label: "Category" },
+      { key: "file_count", label: "Files" },
+      { key: "tech_stack", label: "Tech Stack", wrap: true },
+      { key: "key_features", label: "Key Features", wrap: true },
       { key: "status", label: "Status" },
       { key: "file_url", label: "File", render: (r) => r.file_url ? <a href={r.file_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Download</a> : "—" },
     ],
-    search: ["name", "template_type", "description"],
+    search: ["name", "category", "template_type", "description", "tech_stack", "tags"],
   },
 ];
 
