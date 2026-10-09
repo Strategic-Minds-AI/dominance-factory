@@ -5,33 +5,33 @@ import { cn } from "@/lib/utils";
 
 const navGroups = [
   {
-    label: "Phase 1 — Discovery & Strategy",
+    label: "Phase 1 — Research & Intelligence",
     items: [
-      { step: 1, label: "Name & URL Generator", path: "/", icon: Sparkles },
-      { step: 2, label: "Industry Intelligence", path: "/industries", icon: BarChart3 },
+      { step: 1, label: "Industry Intelligence", path: "/industries", icon: BarChart3 },
+      { step: 2, label: "God Mode SEO Optimizer", path: "/god-mode", icon: Zap },
       { step: 3, label: "SEO Dominance Strategy", path: "/seo-strategy", icon: Crown },
-      { step: 4, label: "Onboarding Pipeline", path: "/onboarding", icon: PlayCircle },
+      { step: 4, label: "Digital Dominance", path: "/digital-dominance", icon: Globe },
     ],
   },
   {
-    label: "Phase 2 — Site Creation",
+    label: "Phase 2 — Name & Setup",
     items: [
-      { step: 5, label: "Visual Editor", path: "/editor", icon: Palette },
-      { step: 6, label: "Pack Review", path: "/packs", icon: Package },
-      { step: 7, label: "Programmatic Launch", path: "/launch", icon: Rocket },
+      { step: 5, label: "Name & URL Generator", path: "/", icon: Sparkles },
+      { step: 6, label: "Onboarding Pipeline", path: "/onboarding", icon: PlayCircle },
     ],
   },
   {
-    label: "Phase 3 — SEO Dominance",
+    label: "Phase 3 — Site Creation",
     items: [
-      { step: 8, label: "God Mode SEO Optimizer", path: "/god-mode", icon: Zap },
-      { step: 9, label: "Digital Dominance", path: "/digital-dominance", icon: Crown },
+      { step: 7, label: "Visual Editor", path: "/editor", icon: Palette },
+      { step: 8, label: "Pack Review", path: "/packs", icon: Package },
+      { step: 9, label: "Programmatic Launch", path: "/launch", icon: Rocket },
+    ],
+  },
+  {
+    label: "Phase 4 — Distribution & Deployment",
+    items: [
       { step: 10, label: "Social Media", path: "/social", icon: Share2 },
-    ],
-  },
-  {
-    label: "Phase 4 — Deployment",
-    items: [
       { step: 11, label: "Provisioning & Domains", path: "/provisioning", icon: Server },
       { step: 12, label: "System Contents", path: "/contents", icon: BookOpen },
     ],
