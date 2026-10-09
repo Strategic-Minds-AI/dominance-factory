@@ -42,45 +42,11 @@ const navGroups = [
     ],
   },
   {
-    label: "Phase 4 — Operations",
+    label: "Quick Access",
     items: [
-      { step: 19, label: "SEO & Content Ops", path: "/launch", icon: FileText },
-      { step: 20, label: "Social Media Studio", path: "/social-automation", icon: Share2 },
-      { step: 21, label: "Image & Video Factory", path: "/media", icon: ImageIcon },
-      { step: 22, label: "CRM & Client OS", path: "/outreach", icon: Send },
-      { step: 23, label: "Super Agent Command", path: "/agents", icon: Bot },
-      { step: 24, label: "Analytics & A/B Testing", path: "/analytics", icon: Activity },
-    ],
-  },
-  {
-    label: "Phase 5 — Validation & Release",
-    items: [
-      { step: 25, label: "Fault Line Validation", path: "/contents", icon: ShieldCheck },
-      { step: 26, label: "Website Preview & QA", path: "/frontend", icon: Eye },
-      { step: 27, label: "Domain Provisioning", path: "/provisioning", icon: Server },
-      { step: 28, label: "Vercel Deployment", path: "/provisioning", icon: Cloud },
-      { step: 29, label: "System Health", path: "/dominance", icon: HeartPulse },
-      { step: 30, label: "System Contents", path: "/contents", icon: BookOpen },
-    ],
-  },
-  {
-    label: "System Access",
-    items: [
-      { label: "A/B Testing", path: "/ab-testing", icon: FlaskConical },
-      { label: "GPT System Gateway", path: "/sync", icon: Webhook },
-      { label: "Google Workspace Hub", path: "/google-workspace", icon: Mail },
-    ],
-  },
-  {
-    label: "System Reference",
-    items: [
-      { label: "Full System Library", path: "/library", icon: Library },
-      { label: "System Scanner", path: "/system-scanner", icon: Scan },
-      { label: "Self-Reflection & Repair", path: "/reflection", icon: Activity },
-      { label: "Asset Ingestion", path: "/ingestion", icon: Package },
-      { label: "System Monitor", path: "/system-monitor", icon: Activity },
-      { label: "Agent Reference", path: "/agent-reference", icon: Bot },
-      { label: "Gap Analysis", path: "/gap-analysis", icon: ShieldCheck },
+      { label: "Dashboard", path: "/dashboard", icon: BarChart3 },
+      { label: "Unified Library", path: "/unified-library", icon: Library },
+      { label: "Backend Operations", path: "/backend/dashboard", icon: Server },
     ],
   },
 ];

@@ -1,0 +1,74 @@
+{
+  "name": "DailyReport",
+  "type": "object",
+  "properties": {
+    "report_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Report Date"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "morning_summary",
+        "weekly_summary"
+      ],
+      "default": "morning_summary",
+      "title": "Report Type"
+    },
+    "health_score": {
+      "type": "number",
+      "default": 0,
+      "title": "Health Score (0-100)"
+    },
+    "entity_counts": {
+      "type": "string",
+      "title": "Entity Counts (JSON)"
+    },
+    "growth_metrics": {
+      "type": "string",
+      "title": "Growth Metrics (JSON)"
+    },
+    "issues_summary": {
+      "type": "string",
+      "title": "Issues Summary (JSON)"
+    },
+    "connectors_status": {
+      "type": "string",
+      "title": "Connectors Status (JSON)"
+    },
+    "recommendations": {
+      "type": "string",
+      "title": "Recommendations (JSON)"
+    },
+    "summary_text": {
+      "type": "string",
+      "title": "Human-readable Summary"
+    }
+  },
+  "required": [
+    "report_date"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

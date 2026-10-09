@@ -64,16 +64,63 @@ async function createBackupSheet(token: string, title: string, headers: string[]
   return spreadsheetId;
 }
 
+async function createSystemLogDoc(token: string, title: string, content: string, parentId: string): Promise<string> {
+  // Create a Google Doc in the backup folder
+  const createRes = await fetch('https://docs.googleapis.com/v1/documents', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title }),
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!createRes.ok) throw new Error(`Docs create failed: ${createRes.status}`);
+  const docData = await createRes.json();
+  const documentId = docData.documentId;
+
+  // Move the doc into the backup folder
+  await fetch(`https://www.googleapis.com/drive/v3/files/${documentId}?addParents=${parentId}&removeParents=root`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(10000),
+  }).catch(() => {});
+
+  // Add content to the doc
+  const lines = content.split('\n');
+  const requests: any[] = [];
+  let insertIndex = 1;
+  for (const line of lines) {
+    requests.push({
+      insertText: {
+        location: { index: insertIndex },
+        text: line + '\n',
+      },
+    });
+    insertIndex += line.length + 1;
+  }
+  await fetch(`https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requests }),
+    signal: AbortSignal.timeout(15000),
+  }).catch(() => {});
+
+  return documentId;
+}
+
 export async function backupToGoogle(base44: any): Promise<any> {
   const driveToken = await getToken(base44, 'googledrive');
   const sheetsToken = await getToken(base44, 'googlesheets');
+  let docsToken: string | null = null;
+  try {
+    docsToken = await getToken(base44, 'googledocs');
+  } catch {}
 
   const ts = new Date().toISOString().split('T')[0];
-  const results: any = { drive: {}, sheets: {}, timestamp: new Date().toISOString() };
+  const results: any = { drive: {}, sheets: {}, docs: {}, timestamp: new Date().toISOString() };
 
   // 1. Create master backup folder structure in Drive
   const masterFolderId = await findOrCreateFolder(driveToken, 'ApexForge Backups');
   const packsFolderId = await findOrCreateFolder(driveToken, `Packs - ${ts}`, masterFolderId);
+  const logsFolderId = await findOrCreateFolder(driveToken, `System Logs - ${ts}`, masterFolderId);
 
   // 2. Back up Packs (preview_html) to Google Drive as HTML files
   let packsBackedUp = 0;
@@ -136,6 +183,43 @@ export async function backupToGoogle(base44: any): Promise<any> {
     results.sheets.generated_pages = { spreadsheet_id: sheetId, record_count: pages.length, url: `https://docs.google.com/spreadsheets/d/${sheetId}/edit` };
   } catch (e: any) {
     results.sheets.generated_pages = { error: e.message };
+  }
+
+  // 6. Back up SystemInventory to Google Sheets
+  try {
+    const invPage = await base44.asServiceRole.entities.SystemInventory.list({ limit: 200 });
+    const invItems: any[] = invPage.items || invPage;
+    const invHeaders = ['System Name', 'Type', 'Category', 'Status', 'Reuse Potential', 'Last Scanned'];
+    const invRows = invItems.map((s: any) => [
+      s.system_name || '', s.system_type || '', s.category || '',
+      s.status || '', s.reuse_potential || '', s.last_scanned_at || '',
+    ]);
+    const sheetId = await createBackupSheet(sheetsToken, `ApexForge System Inventory - ${ts}`, invHeaders, invRows);
+    results.sheets.system_inventory = { spreadsheet_id: sheetId, record_count: invItems.length, url: `https://docs.google.com/spreadsheets/d/${sheetId}/edit` };
+  } catch (e: any) {
+    results.sheets.system_inventory = { error: e.message };
+  }
+
+  // 7. Back up system logs (SystemIssue records) to a Google Doc
+  if (docsToken) {
+    try {
+      const issuesPage = await base44.asServiceRole.entities.SystemIssue.list({ limit: 100, sort: '-created_date' } as any);
+      const issues: any[] = issuesPage.items || issuesPage;
+      let logContent = `APEXFORGE SYSTEM LOGS - ${ts}\n\nTotal Issues: ${issues.length}\n\n`;
+      logContent += '--- RECENT ISSUES ---\n\n';
+      for (const issue of issues.slice(0, 50)) {
+        logContent += `[${issue.status?.toUpperCase() || 'OPEN'}] ${issue.severity?.toUpperCase() || 'MEDIUM'} - ${issue.title || 'Untitled'}\n`;
+        logContent += `Component: ${issue.component || 'N/A'}\n`;
+        logContent += `Detected: ${issue.detected_at || issue.created_date || 'N/A'}\n`;
+        if (issue.description) logContent += `Description: ${issue.description}\n`;
+        if (issue.resolution) logContent += `Resolution: ${issue.resolution}\n`;
+        logContent += '\n';
+      }
+      const docId = await createSystemLogDoc(docsToken, `ApexForge System Logs - ${ts}`, logContent, logsFolderId);
+      results.docs.system_logs = { document_id: docId, issue_count: issues.length, url: `https://docs.google.com/document/d/${docId}/edit` };
+    } catch (e: any) {
+      results.docs.system_logs = { error: e.message };
+    }
   }
 
   return { status: 'backup_complete', ...results };

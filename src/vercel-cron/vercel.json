@@ -4,6 +4,7 @@
     { "path": "/api/cron?task=system_reflection", "schedule": "0 */6 * * *" },
     { "path": "/api/cron?task=queue_process", "schedule": "*/30 * * * *" },
     { "path": "/api/cron?task=asset_categorize", "schedule": "0 */12 * * *" },
-    { "path": "/api/cron?task=google_backup", "schedule": "0 3 * * *" }
+    { "path": "/api/cron?task=google_backup", "schedule": "0 3 * * *" },
+    { "path": "/api/cron?task=morning_summary", "schedule": "0 12 * * *" }
   ]
 }

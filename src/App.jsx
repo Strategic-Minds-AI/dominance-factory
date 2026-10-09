@@ -48,6 +48,9 @@ import AssetIngestion from '@/pages/AssetIngestion';
 import SystemReflection from '@/pages/SystemReflection';
 import GoogleWorkspace from '@/pages/GoogleWorkspace';
 import SystemMonitor from '@/pages/SystemMonitor';
+import BackendLayout from '@/components/BackendLayout';
+import BackendDashboard from '@/pages/BackendDashboard';
+import UnifiedLibrary from '@/pages/UnifiedLibrary';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -90,34 +93,39 @@ const AuthenticatedApp = () => {
           <Route path="/god-mode" element={<GodModeSeo />} />
           <Route path="/digital-dominance" element={<DigitalDominance />} />
           <Route path="/research-engine" element={<AutonomousResearchEngine />} />
-          <Route path="/social-automation" element={<SocialMediaAutomation />} />
-          <Route path="/ab-testing" element={<ABTesting />} />
-          <Route path="/analytics" element={<Analytics />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/websites" element={<WebsiteLibrary />} />
-          <Route path="/social" element={<SocialMediaLibrary />} />
           <Route path="/launch" element={<LaunchPad />} />
-          <Route path="/agents" element={<SuperAgents />} />
           <Route path="/packs" element={<PackReview />} />
           <Route path="/editor" element={<VisualEditor />} />
-          <Route path="/dominance" element={<DominanceShell />} />
           <Route path="/intelligence" element={<IntelligenceHub />} />
-          <Route path="/outreach" element={<OutreachManager />} />
-          <Route path="/media" element={<MediaGenerator />} />
-          <Route path="/provisioning" element={<ProvisioningDashboard />} />
-          <Route path="/sync" element={<GptSync />} />
-          <Route path="/frontend" element={<FrontendPreview />} />
-          <Route path="/contents" element={<SystemContents />} />
-          <Route path="/library" element={<SystemLibrary />} />
-          <Route path="/agent-reference" element={<AgentReference />} />
-          <Route path="/gap-analysis" element={<SystemGapAnalysis />} />
-          <Route path="/system-scanner" element={<SystemScanner />} />
           <Route path="/benchmark-engine" element={<BenchmarkEngine />} />
           <Route path="/build-initiation" element={<BuildInitiation />} />
-          <Route path="/ingestion" element={<AssetIngestion />} />
-          <Route path="/reflection" element={<SystemReflection />} />
-          <Route path="/google-workspace" element={<GoogleWorkspace />} />
-          <Route path="/system-monitor" element={<SystemMonitor />} />
+          <Route path="/unified-library" element={<UnifiedLibrary />} />
+        </Route>
+        <Route element={<BackendLayout />}>
+          <Route path="/backend/dashboard" element={<BackendDashboard />} />
+          <Route path="/backend/social-automation" element={<SocialMediaAutomation />} />
+          <Route path="/backend/ab-testing" element={<ABTesting />} />
+          <Route path="/backend/analytics" element={<Analytics />} />
+          <Route path="/backend/social" element={<SocialMediaLibrary />} />
+          <Route path="/backend/agents" element={<SuperAgents />} />
+          <Route path="/backend/dominance" element={<DominanceShell />} />
+          <Route path="/backend/outreach" element={<OutreachManager />} />
+          <Route path="/backend/media" element={<MediaGenerator />} />
+          <Route path="/backend/provisioning" element={<ProvisioningDashboard />} />
+          <Route path="/backend/sync" element={<GptSync />} />
+          <Route path="/backend/frontend" element={<FrontendPreview />} />
+          <Route path="/backend/contents" element={<SystemContents />} />
+          <Route path="/backend/library" element={<SystemLibrary />} />
+          <Route path="/backend/agent-reference" element={<AgentReference />} />
+          <Route path="/backend/gap-analysis" element={<SystemGapAnalysis />} />
+          <Route path="/backend/system-scanner" element={<SystemScanner />} />
+          <Route path="/backend/ingestion" element={<AssetIngestion />} />
+          <Route path="/backend/reflection" element={<SystemReflection />} />
+          <Route path="/backend/google-workspace" element={<GoogleWorkspace />} />
+          <Route path="/backend/system-monitor" element={<SystemMonitor />} />
+          <Route path="/backend/unified-library" element={<UnifiedLibrary />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -62,7 +62,10 @@ export default async function(req: Request): Promise<Response> {
       crons: [
         { path: "/api/cron?task=health", schedule: "0 * * * *" },
         { path: "/api/cron?task=system_reflection", schedule: "0 */6 * * *" },
-        { path: "/api/cron?task=queue_process", schedule: "*/30 * * * *" }
+        { path: "/api/cron?task=queue_process", schedule: "*/30 * * * *" },
+        { path: "/api/cron?task=asset_categorize", schedule: "0 */12 * * *" },
+        { path: "/api/cron?task=google_backup", schedule: "0 3 * * *" },
+        { path: "/api/cron?task=morning_summary", schedule: "0 12 * * *" }
       ]
     }, null, 2);
 
@@ -118,6 +121,9 @@ export default async function(req: Request): Promise<Response> {
         { task: 'health', schedule: 'Every hour (0 * * * *)', description: 'Lightweight health ping' },
         { task: 'system_reflection', schedule: 'Every 6 hours (0 */6 * * *)', description: 'Full system scan + auto-fix empty entities + connector/secret checks' },
         { task: 'queue_process', schedule: 'Every 30 minutes (*/30 * * * *)', description: 'Process pending page generation queue' },
+        { task: 'asset_categorize', schedule: 'Every 12 hours (0 */12 * * *)', description: 'Scan and catalog new system components into SystemInventory' },
+        { task: 'google_backup', schedule: 'Daily at 3 AM (0 3 * * *)', description: 'Back up generated content to Google Drive and system data to Google Sheets + system logs to Google Docs' },
+        { task: 'morning_summary', schedule: 'Daily at 8 AM ET (0 12 * * *)', description: 'Generate system integrity + growth metrics summary and save to dashboard' },
       ],
       message: 'Vercel Cron is fully configured and automated. PACK_SYNC_TOKEN has been set as an encrypted env var. Cron jobs will fire automatically on schedule — no manual triggering needed.',
     });
