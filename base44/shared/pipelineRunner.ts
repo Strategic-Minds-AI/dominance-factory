@@ -9,7 +9,7 @@ export async function getContext(client, run) {
 }
 export async function advanceRun(client, runId, expectedStep) {
   let run = await client.entities.PipelineRun.get(runId);
-  if (!run || run.current_step !== expectedStep || !EXECUTABLE_STEPS.includes(run.current_step) || !['queued', 'manual', 'failed'].includes(run.status)) return { skipped: true, run };
+  if (!run || run.pause_requested || run.current_step !== expectedStep || !EXECUTABLE_STEPS.includes(run.current_step) || !['queued', 'manual', 'failed'].includes(run.status)) return { skipped: true, run };
   const prerequisites = { benchmark: 'research', simulate: 'benchmark', designs: 'simulate', draft: 'approval' };
   const context = await getContext(client, run);
   if (prerequisites[run.current_step] && !context[prerequisites[run.current_step]]) throw new Error('Previous step output is missing; execution refused.');
@@ -22,7 +22,7 @@ export async function advanceRun(client, runId, expectedStep) {
     const output = existing.items[0] ? JSON.parse(existing.items[0].output) : await performStage(client, run, context);
     if (!existing.items[0]) await saveArtifact(client, run, run.current_step, context, output);
     const latest = await client.entities.PipelineRun.get(runId); const next = NEXT[run.current_step];
-    const status = next === 'approval' ? 'awaiting_approval' : next === 'release' ? 'blocked' : latest.pause_requested ? 'paused' : run.mode === 'autonomous' ? 'queued' : 'manual';
+    const status = next === 'release' ? 'blocked' : latest.pause_requested ? 'paused' : next === 'approval' ? 'awaiting_approval' : run.mode === 'autonomous' ? 'queued' : 'manual';
     if (latest.lease_token !== lease || latest.status !== 'running') return { skipped: true, run: latest };
     await client.entities.PipelineRun.update(runId, { current_step: next, status, lease_token: '', lease_until: '', error: next === 'release' ? 'Drafts are ready. Deployment, social, payment and 24/7 agent release are not enabled yet.' : '', ...(output.website_id ? { website_id: output.website_id } : {}) });
     return { run: await client.entities.PipelineRun.get(runId), output_hash: await fingerprint(output) };
