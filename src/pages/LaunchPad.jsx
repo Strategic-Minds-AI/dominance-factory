@@ -10,6 +10,7 @@ export default function LaunchPad() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [processLog, setProcessLog] = useState({ processed: 0, remaining: 0 });
 
   const loadCampaigns = useCallback(async () => {
     try {
@@ -36,9 +37,20 @@ export default function LaunchPad() {
 
   const handleProcessNow = async () => {
     setProcessing(true);
+    setProcessLog({ processed: 0, remaining: 0 });
     try {
-      await base44.functions.invoke("processGenerationQueue", { batch_size: 5 });
-      await loadCampaigns();
+      // Loop through the queue in batches of 10 until empty or ~4 minutes elapsed
+      let totalProcessed = 0;
+      let remaining = 1;
+      const startTime = Date.now();
+      while (remaining > 0 && Date.now() - startTime < 240000) {
+        const res = await base44.functions.invoke("processGenerationQueue", { batch_size: 10 });
+        totalProcessed += res.pages_processed || 0;
+        remaining = res.remaining || 0;
+        setProcessLog({ processed: totalProcessed, remaining });
+        await loadCampaigns();
+        if (res.pages_processed === 0) break;
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -57,7 +69,9 @@ export default function LaunchPad() {
           {hasRunning && (
             <Button variant="outline" onClick={handleProcessNow} disabled={processing}>
               {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-              Process Queue Now
+              {processing
+                ? `Processing... ${processLog.processed} done, ${processLog.remaining} left`
+                : "Process Queue Now"}
             </Button>
           )}
           <Button onClick={() => setShowForm(true)}>

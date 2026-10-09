@@ -28,21 +28,29 @@ REQUIREMENTS:
 }
 
 export async function callAIGateway(prompt: string, apiKey: string, model?: string): Promise<string> {
-  const response = await fetch(AI_GATEWAY_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: model || DEFAULT_MODEL,
-      messages: [{ role: 'user', content: prompt }],
-      stream: false,
-    }),
-    signal: AbortSignal.timeout(120000),
+  const requestBody = JSON.stringify({
+    model: model || DEFAULT_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    stream: false,
   });
 
-  if (!response.ok) {
+  let response: Response;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    response = await fetch(AI_GATEWAY_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: requestBody,
+      signal: AbortSignal.timeout(120000),
+    });
+    if (response.ok) break;
+    // Retry on transient gateway errors
+    if ([403, 429, 500, 503].includes(response.status) && attempt < 2) {
+      await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
+      continue;
+    }
     const errText = await response.text();
     throw new Error(`AI Gateway error: ${response.status} — ${errText.substring(0, 500)}`);
   }
