@@ -1,7 +1,7 @@
 // Full automated provisioning — creates Railway services, Vercel deployments,
 // and orchestrates the entire infrastructure for a new system or client.
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
-import { provisionRailwayService, provisionVercelProject, getProjectMeta, railwayGraphQL } from '../../shared/provisioningEngine.ts';
+import { provisionRailwayService, provisionVercelProject, getProjectMeta, railwayGraphQL, checkDomainAvailability, purchaseDomain } from '../../shared/provisioningEngine.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -11,7 +11,7 @@ export default async function(req: Request): Promise<Response> {
     if (user.role !== 'admin') return Response.json({ error: 'Admin only' }, { status: 403 });
 
     const body = await req.json();
-    const { name, job_type, repo_url, env_vars, files, domain } = body;
+    const { name, job_type, repo_url, env_vars, files, domain, purchase_domain, contact_info } = body;
 
     if (!name) return Response.json({ error: 'name is required' }, { status: 400 });
 
@@ -53,6 +53,23 @@ export default async function(req: Request): Promise<Response> {
         });
       } catch (e) {
         errors.push(`Vercel: ${e.message}`);
+      }
+    }
+
+    // ── Purchase domain via GoDaddy (if requested) ──
+    if (domain && purchase_domain) {
+      try {
+        const availability = await checkDomainAvailability(domain);
+        results.domain_availability = availability;
+        if (availability.available) {
+          const purchase = await purchaseDomain({ domain, contactInfo: contact_info });
+          results.domain_purchase = purchase;
+          await base44.asServiceRole.entities.ProvisioningJob.update(job.id, { domain });
+        } else {
+          errors.push(`Domain ${domain} not available`);
+        }
+      } catch (e) {
+        errors.push(`GoDaddy: ${e.message}`);
       }
     }
 

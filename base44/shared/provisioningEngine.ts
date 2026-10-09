@@ -122,3 +122,79 @@ export async function provisionSupabaseSchema(sql: string): Promise<any> {
   }
   return await res.json();
 }
+
+// ── GoDaddy Domain Purchasing ─────────────────────────────────
+const GODADDY_API = 'https://api.godaddy.com/v1';
+
+function getGoDaddyAuth(): string {
+  const key = secrets.get('GODADDY_API_KEY');
+  const secret = secrets.get('GODADDY_API_SECRET');
+  if (!key || !secret) throw new Error('GODADDY_API_KEY and GODADDY_API_SECRET required');
+  return `sso-key ${key}:${secret}`;
+}
+
+export async function checkDomainAvailability(domain: string): Promise<{ available: boolean; price?: number; currency?: string }> {
+  const res = await fetch(`${GODADDY_API}/domains/available?domain=${encodeURIComponent(domain)}`, {
+    headers: { Authorization: getGoDaddyAuth() },
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`GoDaddy availability error ${res.status}: ${err.substring(0, 300)}`);
+  }
+  const data = await res.json();
+  return { available: data.available, price: data.price, currency: data.currency };
+}
+
+export async function purchaseDomain(params: {
+  domain: string;
+  years?: number;
+  contactInfo?: {
+    nameFirst: string; nameLast: string; email: string; phone: string;
+    address1: string; city: string; state: string; postalCode: string; country: string;
+  };
+}): Promise<{ orderId: string; status: string }> {
+  const auth = getGoDaddyAuth();
+  const contact = params.contactInfo || {
+    nameFirst: 'Admin', nameLast: 'User', email: 'admin@dominancefactory.com',
+    phone: '+18005551234', address1: '123 Main St', city: 'Dallas',
+    state: 'TX', postalCode: '75201', country: 'US',
+  };
+
+  const purchaseBody = {
+    domain: params.domain,
+    period: params.years || 1,
+    renewAuto: false,
+    consent: { agreementKey: 'dnst', agreedAt: new Date().toISOString(), agreementKeys: ['dnst'] },
+    contactRegistrant: contact,
+    contactAdmin: contact,
+    contactTech: contact,
+    contactBilling: contact,
+  };
+
+  const res = await fetch(`${GODADDY_API}/domains`, {
+    method: 'POST',
+    headers: { Authorization: auth, 'Content-Type': 'application/json' },
+    body: JSON.stringify(purchaseBody),
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`GoDaddy purchase error ${res.status}: ${err.substring(0, 400)}`);
+  }
+  const data = await res.json();
+  return { orderId: data.orderId || '', status: 'purchased' };
+}
+
+export async function getDomainStatus(domain: string): Promise<{ status: string; expires?: string }> {
+  const res = await fetch(`${GODADDY_API}/domains/${encodeURIComponent(domain)}`, {
+    headers: { Authorization: getGoDaddyAuth() },
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`GoDaddy status error ${res.status}: ${err.substring(0, 300)}`);
+  }
+  const data = await res.json();
+  return { status: data.status || 'unknown', expires: data.expires };
+}
