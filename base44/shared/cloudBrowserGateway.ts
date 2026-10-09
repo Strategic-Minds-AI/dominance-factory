@@ -1,11 +1,21 @@
-// Cloud Browser Gateway — calls a Railway-hosted Playwright browser service.
-// The user provisions the service via provisionSystem; its URL is stored as CLOUD_BROWSER_URL.
+// Cloud Browser Gateway — calls the user's Railway-hosted Playwright browser engine.
+// Uses ENGINE_URL and ENGINE_API_KEY secrets for the browser service connection.
 import { secrets } from 'base44:runtime';
 
 export function getBrowserUrl(): string {
-  const url = secrets.get('CLOUD_BROWSER_URL');
-  if (!url) throw new Error('CLOUD_BROWSER_URL not configured — provision a browser service first');
+  const url = secrets.get('ENGINE_URL');
+  if (!url) throw new Error('ENGINE_URL not configured — set your browser engine URL');
   return url.replace(/\/$/, '');
+}
+
+export function getEngineKey(): string {
+  const key = secrets.get('ENGINE_API_KEY');
+  if (!key) throw new Error('ENGINE_API_KEY not configured');
+  return key;
+}
+
+function authHeaders(): Record<string, string> {
+  return { 'Content-Type': 'application/json', 'X-Engine-Key': getEngineKey() };
 }
 
 export function isConfigured(): boolean {
@@ -22,7 +32,7 @@ export async function runBrowserTask(task: string, options?: {
   const base = getBrowserUrl();
   const res = await fetch(`${base}/api/run`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify({ task, ...options }),
     signal: AbortSignal.timeout(120000),
   });
@@ -36,7 +46,7 @@ export async function runBrowserTask(task: string, options?: {
 // Check browser service health and queue depth.
 export async function getBrowserStatus(): Promise<{ status: string; queue: number; uptime: number }> {
   const base = getBrowserUrl();
-  const res = await fetch(`${base}/api/status`, { signal: AbortSignal.timeout(10000) });
+  const res = await fetch(`${base}/api/status`, { headers: authHeaders(), signal: AbortSignal.timeout(10000) });
   if (!res.ok) throw new Error(`Browser status error ${res.status}`);
   return await res.json();
 }
