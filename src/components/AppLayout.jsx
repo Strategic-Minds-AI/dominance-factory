@@ -24,7 +24,7 @@ export default function AppLayout() {
     <div className="flex min-h-screen bg-background">
       <aside className="w-60 border-r border-white/10 bg-[#0a0a0a] flex flex-col shrink-0">
         <div className="px-5 py-6 border-b border-white/10">
-          <h1 className="text-base font-bold tracking-tight text-white">DominanceFactory</h1>
+          <h1 className="text-base font-bold tracking-tight text-white">ApexForge</h1>
           <p className="text-xs text-gray-500 mt-0.5">Programmatic SEO Platform</p>
         </div>
         <nav className="flex-1 p-3 space-y-1">

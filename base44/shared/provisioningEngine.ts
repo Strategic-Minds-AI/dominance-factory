@@ -161,7 +161,7 @@ export async function purchaseDomain(params: {
 }): Promise<{ orderId: string; status: string }> {
   const auth = getGoDaddyAuth();
   const contact = params.contactInfo || {
-    nameFirst: 'Admin', nameLast: 'User', email: 'admin@dominancefactory.com',
+    nameFirst: 'Admin', nameLast: 'User', email: 'admin@apexforge.com',
     phone: '+18005551234', address1: '123 Main St', city: 'Dallas',
     state: 'TX', postalCode: '75201', country: 'US',
   };

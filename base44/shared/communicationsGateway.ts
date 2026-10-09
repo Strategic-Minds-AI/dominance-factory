@@ -16,7 +16,7 @@ export async function sendEmail(params: {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: params.from || 'DominanceFactory <noreply@resend.dev>',
+      from: params.from || 'ApexForge <noreply@resend.dev>',
       to: params.to,
       subject: params.subject,
       html: params.html,
