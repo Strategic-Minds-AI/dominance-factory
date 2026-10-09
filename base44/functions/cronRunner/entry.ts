@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
 import { aiComplete, MODELS } from "../../shared/vercelAiGateway.ts";
+import { categorizeAssets, backupToGoogle } from "../../shared/automationEngine.ts";
 
 // All entities in the system
 const ALL_ENTITIES = [
@@ -196,16 +197,9 @@ export default async function(req: Request): Promise<Response> {
 
     // ── ASSET CATEGORIZE: Scan and catalog new assets into SystemInventory ──
     if (task === 'asset_categorize') {
-      const origin = new URL(req.url).origin;
       try {
-        const res = await fetch(`${origin}/functions/assetCategorizer`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-          signal: AbortSignal.timeout(60000),
-        });
-        const data = await res.json();
-        return Response.json({ task: 'asset_categorize', result: data, timestamp: new Date().toISOString() });
+        const result = await categorizeAssets(base44);
+        return Response.json({ task: 'asset_categorize', result, timestamp: new Date().toISOString() });
       } catch (e) {
         return Response.json({ task: 'asset_categorize', error: e.message, timestamp: new Date().toISOString() }, { status: 500 });
       }
@@ -213,16 +207,9 @@ export default async function(req: Request): Promise<Response> {
 
     // ── GOOGLE BACKUP: Back up generated content to Drive and Sheets ──
     if (task === 'google_backup') {
-      const origin = new URL(req.url).origin;
       try {
-        const res = await fetch(`${origin}/functions/googleBackup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-          signal: AbortSignal.timeout(120000),
-        });
-        const data = await res.json();
-        return Response.json({ task: 'google_backup', result: data, timestamp: new Date().toISOString() });
+        const result = await backupToGoogle(base44);
+        return Response.json({ task: 'google_backup', result, timestamp: new Date().toISOString() });
       } catch (e) {
         return Response.json({ task: 'google_backup', error: e.message, timestamp: new Date().toISOString() }, { status: 500 });
       }
