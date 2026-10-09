@@ -53,6 +53,7 @@ import BackendDashboard from '@/pages/BackendDashboard';
 import UnifiedLibrary from '@/pages/UnifiedLibrary';
 import TemplateLibrary from '@/pages/TemplateLibrary';
 import PipelineControl from '@/pages/PipelineControl';
+import GodModeHome from '@/pages/GodModeHome';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -88,8 +89,9 @@ const AuthenticatedApp = () => {
       <Route path="/oauth/consent" element={<OAuthConsent />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<BusinessNameGenerator />} />
+          <Route path="/" element={<GodModeHome />} />
           <Route path="/industries" element={<IndustryIntelligence />} />
+          <Route path="/business-name" element={<BusinessNameGenerator />} />
           <Route path="/seo-strategy" element={<SeoDominanceStrategy />} />
           <Route path="/onboarding" element={<OnboardingPipeline />} />
           <Route path="/pipeline" element={<PipelineControl />} />
