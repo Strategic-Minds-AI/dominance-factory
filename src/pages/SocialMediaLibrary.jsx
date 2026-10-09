@@ -4,7 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SocialPostCard from "@/components/social/SocialPostCard";
-import { Share2, Calendar, Clock } from "lucide-react";
+import { Share2, Calendar, Clock, Sparkles, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const categories = ["all", "promotional", "educational", "engagement", "behind_scenes", "testimonial", "announcement", "other"];
 const platforms = ["all", "facebook", "instagram", "twitter", "linkedin", "tiktok", "youtube"];
@@ -15,6 +18,29 @@ export default function SocialMediaLibrary() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("all");
   const [platform, setPlatform] = useState("all");
+  const [showGen, setShowGen] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [genTopic, setGenTopic] = useState("");
+  const [genPlatform, setGenPlatform] = useState("all");
+  const [genCount, setGenCount] = useState(3);
+
+  const handleGenerate = async () => {
+    if (!genTopic) return;
+    setGenerating(true);
+    try {
+      await base44.functions.invoke("generateSocialContent", {
+        topic: genTopic, platform: genPlatform, count: genCount,
+        category: category !== "all" ? category : "promotional",
+      });
+      setGenTopic(""); setShowGen(false);
+      const query = {};
+      if (category !== "all") query.category = category;
+      if (platform !== "all") query.platform = platform;
+      const { items } = await base44.entities.SocialPost.filter(query, { sort: "-created_date", limit: 50 });
+      setPosts(items || []);
+    } catch (e) { console.error(e); }
+    finally { setGenerating(false); }
+  };
 
   useEffect(() => {
     async function load() {
@@ -45,9 +71,9 @@ export default function SocialMediaLibrary() {
           <h1 className="text-2xl font-bold mb-1">Social Media Library</h1>
           <p className="text-muted-foreground">AI-generated content, categorized and scheduled across platforms</p>
         </div>
-        <Button>
-          <Share2 className="w-4 h-4" />
-          New Post
+        <Button onClick={() => setShowGen(true)}>
+          <Sparkles className="w-4 h-4" />
+          Generate Posts
         </Button>
       </div>
 
@@ -122,6 +148,42 @@ export default function SocialMediaLibrary() {
           </div>
         </div>
       )}
+
+      <Dialog open={showGen} onOpenChange={setShowGen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Generate Social Posts</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>Topic</Label>
+              <Input value={genTopic} onChange={(e) => setGenTopic(e.target.value)} placeholder="e.g. roof maintenance tips for winter" />
+            </div>
+            <div>
+              <Label>Platform</Label>
+              <Select value={genPlatform} onValueChange={setGenPlatform}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {platforms.map((p) => (
+                    <SelectItem key={p} value={p} className="capitalize">{p === "all" ? "All Platforms" : p}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Number of Posts</Label>
+              <Input type="number" min="1" max="10" value={genCount} onChange={(e) => setGenCount(parseInt(e.target.value) || 3)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowGen(false)}>Cancel</Button>
+            <Button onClick={handleGenerate} disabled={generating || !genTopic}>
+              {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+              {generating ? "Generating..." : "Generate"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

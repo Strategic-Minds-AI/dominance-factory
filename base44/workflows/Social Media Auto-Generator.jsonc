@@ -1,0 +1,50 @@
+{
+  "description": "Generates fresh social media content daily via Vercel AI Gateway",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "social_auto_generator",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "generate_posts": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "generateSocialContent",
+            "args": {
+              "topic": "digital marketing trends and tips",
+              "platform": "all",
+              "count": 5,
+              "category": "educational"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Generate social posts",
+            "description": "AI creates 5 fresh posts daily"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Social Media Auto-Generator",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

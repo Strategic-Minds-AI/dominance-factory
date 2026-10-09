@@ -1,0 +1,90 @@
+{
+  "name": "ProvisioningJob",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "System Name"
+    },
+    "job_type": {
+      "type": "string",
+      "title": "Provisioning Type",
+      "enum": [
+        "website",
+        "browser_service",
+        "agent_system",
+        "full_stack",
+        "social_suite"
+      ],
+      "default": "website"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "provisioning",
+        "deployed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "config": {
+      "type": "string",
+      "title": "Configuration (JSON)"
+    },
+    "result": {
+      "type": "string",
+      "title": "Result (JSON)"
+    },
+    "railway_service_id": {
+      "type": "string",
+      "title": "Railway Service ID"
+    },
+    "railway_url": {
+      "type": "string",
+      "title": "Railway Service URL"
+    },
+    "vercel_project_id": {
+      "type": "string",
+      "title": "Vercel Project ID"
+    },
+    "vercel_url": {
+      "type": "string",
+      "title": "Vercel Deployment URL"
+    },
+    "domain": {
+      "type": "string",
+      "title": "Custom Domain"
+    },
+    "error": {
+      "type": "string",
+      "title": "Error Message"
+    }
+  },
+  "required": [
+    "name",
+    "job_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

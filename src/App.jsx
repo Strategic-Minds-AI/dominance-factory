@@ -21,6 +21,9 @@ import SuperAgents from '@/pages/SuperAgents';
 import VisualEditor from '@/pages/VisualEditor';
 import DominanceShell from '@/pages/DominanceShell';
 import IntelligenceHub from '@/pages/IntelligenceHub';
+import OutreachManager from '@/pages/OutreachManager';
+import MediaGenerator from '@/pages/MediaGenerator';
+import ProvisioningDashboard from '@/pages/ProvisioningDashboard';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -64,6 +67,9 @@ const AuthenticatedApp = () => {
           <Route path="/editor" element={<VisualEditor />} />
           <Route path="/dominance" element={<DominanceShell />} />
           <Route path="/intelligence" element={<IntelligenceHub />} />
+          <Route path="/outreach" element={<OutreachManager />} />
+          <Route path="/media" element={<MediaGenerator />} />
+          <Route path="/provisioning" element={<ProvisioningDashboard />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -1,0 +1,101 @@
+{
+  "name": "OutreachCampaign",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Campaign Name"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "sms",
+        "mms",
+        "whatsapp",
+        "multi"
+      ],
+      "default": "email"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "running",
+        "paused",
+        "completed",
+        "failed"
+      ],
+      "default": "draft"
+    },
+    "subject": {
+      "type": "string",
+      "title": "Email Subject / SMS Preview"
+    },
+    "template": {
+      "type": "string",
+      "title": "Message Template (use {{first_name}}, {{company}})"
+    },
+    "media_url": {
+      "type": "string",
+      "title": "MMS Media URL"
+    },
+    "from_number": {
+      "type": "string",
+      "title": "Telnyx From Number (for SMS/MMS)"
+    },
+    "from_email": {
+      "type": "string",
+      "title": "Resend From Email"
+    },
+    "target_count": {
+      "type": "number",
+      "title": "Total Targets",
+      "default": 0
+    },
+    "sent_count": {
+      "type": "number",
+      "title": "Sent",
+      "default": 0
+    },
+    "failed_count": {
+      "type": "number",
+      "title": "Failed",
+      "default": 0
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name",
+    "channel"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

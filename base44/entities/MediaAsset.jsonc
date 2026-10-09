@@ -1,0 +1,86 @@
+{
+  "name": "MediaAsset",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Asset Name"
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video",
+        "card",
+        "graphic",
+        "social_post",
+        "ad_creative"
+      ],
+      "default": "image"
+    },
+    "prompt": {
+      "type": "string",
+      "title": "Generation Prompt"
+    },
+    "file_url": {
+      "type": "string",
+      "title": "Generated File URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "generating",
+        "ready",
+        "failed"
+      ],
+      "default": "generating"
+    },
+    "metadata": {
+      "type": "string",
+      "title": "Metadata (JSON)"
+    },
+    "campaign_id": {
+      "type": "string",
+      "title": "Linked Campaign ID"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "facebook",
+        "instagram",
+        "twitter",
+        "linkedin",
+        "tiktok",
+        "youtube",
+        "general"
+      ],
+      "default": "general"
+    }
+  },
+  "required": [
+    "name",
+    "asset_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

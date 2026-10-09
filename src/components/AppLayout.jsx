@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Globe, Share2, Rocket, Bot, Package, Palette, Command, Brain } from "lucide-react";
+import { LayoutDashboard, Globe, Share2, Rocket, Bot, Package, Palette, Command, Brain, Send, Image as ImageIcon, Server } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -13,6 +13,9 @@ const navItems = [
   { label: "Visual Editor", path: "/editor", icon: Palette },
   { label: "Dominance Shell", path: "/dominance", icon: Command },
   { label: "Intelligence Hub", path: "/intelligence", icon: Brain },
+  { label: "Outreach", path: "/outreach", icon: Send },
+  { label: "Media Studio", path: "/media", icon: ImageIcon },
+  { label: "Provisioning", path: "/provisioning", icon: Server },
 ];
 
 export default function AppLayout() {
