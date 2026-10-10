@@ -1,9 +1,8 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { BarChart3, Crown, Globe, Sparkles, MapPin, Trophy, TrendingUp, Calculator, Layers, CheckCircle, PlayCircle, Package, Database, Palette, Rocket, FileText, Share2, ImageIcon, Send, Bot, Activity, FlaskConical, ShieldCheck, Eye, Server, Cloud, HeartPulse, BookOpen, Webhook, Cpu, Brain, Scan, Zap, Mail } from "lucide-react";
+import { BarChart3, Globe, Server, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AutonomousChatAgent from "@/components/AutonomousChatAgent";
-import { Library } from "lucide-react";
 
 const navGroups = [
   {
@@ -25,7 +24,7 @@ const navGroups = [
 export default function AppLayout() {
   const location = useLocation();
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a]">
+    <div className="dark flex min-h-screen bg-[#0a0a0a]">
       <aside className="w-16 md:w-60 border-r border-white/10 bg-[#0a0a0a] flex flex-col shrink-0">
         <div className="px-5 py-6 border-b border-white/10">
           <h1 className="text-base font-bold tracking-tight text-white"><span className="hidden md:inline">ApexForge</span><span className="md:hidden">AF</span></h1>

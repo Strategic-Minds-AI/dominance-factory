@@ -120,7 +120,7 @@ export default function MediaGenerator() {
       </Card>
 
       {lastResult && (
-        <Card className="p-5 bg-blue-50/50 border-blue-200">
+        <Card className="p-5 bg-cyan-500/5 border-cyan-500/20">
           <h3 className="font-semibold text-sm mb-2">Last Generation Result</h3>
           <pre className="text-xs text-muted-foreground overflow-auto max-h-48 whitespace-pre-wrap">{JSON.stringify(lastResult, null, 2)}</pre>
         </Card>
