@@ -16,6 +16,7 @@ const FILTERS = [
 
 export default function PackReview() {
   const [packs, setPacks] = useState([]);
+  const [loadError, setLoadError] = useState('');
   const [counts, setCounts] = useState({ pending_review: 0, approved: 0, rejected: 0 });
   const [activeFilter, setActiveFilter] = useState('pending_review');
   const [loading, setLoading] = useState(true);
@@ -37,14 +38,21 @@ export default function PackReview() {
 
   const loadPacks = useCallback(async () => {
     setLoading(true);
+    setLoadError('');
     try {
       const query = activeFilter === 'all' ? {} : { status: activeFilter };
-      const { items } = await base44.entities.Pack.filter(query, {
-        sort: '-created_date',
-        limit: 50,
-      });
+      // Base44 SDK versions may return an array or a paginated object.
+      const response = await base44.entities.Pack.filter(query, '-created_date', 50);
+      const items = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.items) ? response.items
+        : Array.isArray(response?.data) ? response.data
+        : Array.isArray(response?.entities) ? response.entities : null;
+      if (!items) throw new Error('Unexpected Pack API response format');
       setPacks(items);
-    } catch {
+    } catch (error) {
+      console.error('Pack Review loading failed:', error);
+      setLoadError(error?.message || 'Unable to retrieve packs. Check account access and retry.');
       setPacks([]);
     } finally {
       setLoading(false);
@@ -145,9 +153,16 @@ export default function PackReview() {
           })}
         </div>
 
+        {loadError && (
+          <Card role="alert" className="p-4 border-red-300 bg-red-50 text-red-900">
+            <strong>Unable to load packs.</strong>
+            <p className="text-sm mt-1">{loadError}</p>
+            <Button variant="outline" size="sm" className="mt-3" onClick={refreshAll}>Retry</Button>
+          </Card>
+        )}
         {loading ? (
           <div className="text-center py-12 text-muted-foreground">Loading packs...</div>
-        ) : packs.length === 0 ? (
+        ) : loadError ? null : packs.length === 0 ? (
           <div className="space-y-6">
             <Card className="p-12 text-center">
               <Inbox className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
