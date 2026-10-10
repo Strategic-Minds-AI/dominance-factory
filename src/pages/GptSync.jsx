@@ -7,8 +7,8 @@ export default function GptSync() {
   const [tab, setTab] = useState('endpoint');
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-primary text-primary-foreground">
+    <div className="min-h-screen bg-[#05070a] text-white">
+      <header className="border-b border-white/10 bg-[#0d141e] text-white">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-2">
           <Webhook className="h-5 w-5" />
           <div>

@@ -7,47 +7,16 @@ import { Library } from "lucide-react";
 
 const navGroups = [
   {
-    label: "Phase 1 — Research & Intelligence",
+    label: "Main",
     items: [
-      { step: 1, label: "Industry Opportunity Scanner", path: "/industries", icon: BarChart3 },
-      { label: "Benchmark & Reverse Engineer", path: "/benchmark-engine", icon: Trophy },
-      { step: 2, label: "Market Intelligence", path: "/intelligence", icon: Brain },
-      { step: 3, label: "God Mode SEO", path: "/god-mode", icon: Cpu },
-      { step: 4, label: "Digital Dominance", path: "/digital-dominance", icon: Globe },
-      { step: 5, label: "Name & Domain Intelligence", path: "/", icon: Sparkles },
-      { step: 6, label: "NearMe / NearYou Strategy", path: "/", icon: MapPin },
-      { step: 7, label: "Opportunity Ranking", path: "/research-engine", icon: Trophy },
-    ],
-  },
-  {
-    label: "Phase 2 — Simulation & Strategy",
-    items: [
-      { step: 8, label: "Strategy Tournament", path: "/research-engine", icon: Crown },
-      { step: 9, label: "Portfolio Simulator", path: "/", icon: TrendingUp },
-      { step: 10, label: "Financial & ROI Analysis", path: "/research-engine", icon: Calculator },
-      { step: 11, label: "Ten-Strategy Comparison", path: "/research-engine", icon: Layers },
-      { step: 12, label: "Strategy Selection", path: "/seo-strategy", icon: CheckCircle },
-    ],
-  },
-  {
-    label: "Phase 3 — Auto Builder",
-    items: [
-      { step: 13, label: "Build Initiation & Gap Analysis", path: "/build-initiation", icon: Zap },
-      { step: 14, label: "Business Onboarding", path: "/onboarding", icon: PlayCircle },
-      { step: 15, label: "Brand & Design System", path: "/packs", icon: Package },
-      { step: 16, label: "Website Genome", path: "/websites", icon: Database },
-      { step: 17, label: "Visual Editor", path: "/editor", icon: Palette },
-      { step: 18, label: "Pack Review", path: "/packs", icon: Package },
-      { step: 19, label: "Programmatic Launch", path: "/launch", icon: Rocket },
-    ],
-  },
-  {
-    label: "Quick Access",
-    items: [
-      { label: "Connected Pipeline", path: "/pipeline", icon: Layers },
+      { step: 1, label: "God Mode Pipeline", path: "/god-mode-pipeline", icon: Zap },
       { label: "Dashboard", path: "/dashboard", icon: BarChart3 },
-      { label: "Unified Library", path: "/unified-library", icon: Library },
-      { label: "Template Library", path: "/template-library", icon: Package },
+      { label: "Website Library", path: "/websites", icon: Globe },
+    ],
+  },
+  {
+    label: "System",
+    items: [
       { label: "Backend Operations", path: "/backend/dashboard", icon: Server },
     ],
   },
@@ -96,7 +65,7 @@ export default function AppLayout() {
           ))}
         </nav>
       </aside>
-      <main className="min-w-0 flex-1 overflow-auto">
+      <main className="min-w-0 flex-1 overflow-auto bg-[#05070a] text-white">
         <Outlet />
       </main>
       <AutonomousChatAgent />

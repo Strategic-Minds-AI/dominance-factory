@@ -59,7 +59,7 @@ export default function LaunchPad() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-[#05070a] text-white min-h-screen">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold mb-1">Launch Pad</h1>

@@ -58,9 +58,9 @@ export default function MediaGenerator() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#05070a] text-white min-h-screen">
       <div>
-        <h1 className="text-2xl font-bold">Media Generator</h1>
+        <h1 className="text-2xl font-bold text-white">Media Generator</h1>
         <p className="text-sm text-muted-foreground mt-1">Generate social posts, ad creatives, image prompts, and business cards via Vercel AI Gateway</p>
       </div>
 
