@@ -56,8 +56,15 @@ export default function AutomatedStep({ stepNum, stepLabel, stepDesc, status, ou
 
         {isError && (
           <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-5">
-            <p className="text-red-300 text-sm font-medium mb-1">This step requires AI integration credits.</p>
-            <p className="text-slate-400 text-sm">The workspace is currently out of integration credits. This step will run automatically once credits reset (Oct 12) or the plan is upgraded. Your session is saved — no action needed.</p>
+            <p className="text-red-300 text-sm font-medium mb-1">Step encountered an error.</p>
+            <p className="text-slate-400 text-sm mb-2">
+              {typeof output === "string" && output.includes("integration credit")
+                ? "The workspace is currently out of Base44 integration credits. This step routes through the Vercel AI Gateway and should work independently — if the error persists, check the VERCEL_AI_GATEWAY_API_KEY secret."
+                : "This step runs through the Vercel AI Gateway (independent of Base44 integration credits). See the error details below."}
+            </p>
+            {typeof output === "string" && (
+              <pre className="text-xs text-red-300/70 whitespace-pre-wrap font-mono mt-2 max-h-32 overflow-y-auto">{output}</pre>
+            )}
           </div>
         )}
       </div>

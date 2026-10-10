@@ -42,20 +42,31 @@ export async function aiComplete(params: {
     stream: false,
   };
   if (params.online) body.online = true;
-  const res = await fetch(GATEWAY_URL, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(120000),
-  });
-  if (!res.ok) {
+
+  let lastError: string | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(GATEWAY_URL, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(120000),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const content = data.choices?.[0]?.message?.content;
+      if (!content || !content.trim()) throw new Error('AI Gateway returned empty response');
+      return content;
+    }
     const err = await res.text();
-    throw new Error(`AI Gateway error ${res.status}: ${err.substring(0, 400)}`);
+    lastError = `AI Gateway error ${res.status}: ${err.substring(0, 400)}`;
+    // Retry on transient errors (rate limit, server errors)
+    if ([429, 500, 502, 503].includes(res.status) && attempt < 2) {
+      await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
+      continue;
+    }
+    throw new Error(lastError);
   }
-  const data = await res.json();
-  const content = data.choices?.[0]?.message?.content;
-  if (!content || !content.trim()) throw new Error('AI Gateway returned empty response');
-  return content;
+  throw new Error(lastError || 'AI Gateway failed after retries');
 }
 
 export async function aiCompleteJson<T = any>(params: {
@@ -66,11 +77,22 @@ export async function aiCompleteJson<T = any>(params: {
   online?: boolean;
 }): Promise<T> {
   const text = await aiComplete({ ...params, temperature: params.temperature ?? 0.3 });
-  const match = text.match(/\{[\s\S]*\}/);
+  // Strip markdown code fences (```json ... ``` or ``` ... ```)
+  let cleaned = text.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+  // Try direct parse first
+  try { return JSON.parse(cleaned) as T; } catch { /* fall through */ }
+  // Try extracting the JSON object (greedy match from first { to last })
+  const match = cleaned.match(/\{[\s\S]*\}/);
   if (match) {
     try { return JSON.parse(match[0]) as T; } catch { /* fall through */ }
   }
-  throw new Error('AI Gateway did not return valid JSON: ' + text.substring(0, 200));
+  // Try extracting a JSON array
+  const arrayMatch = cleaned.match(/\[[\s\S]*\]/);
+  if (arrayMatch) {
+    try { return JSON.parse(arrayMatch[0]) as T; } catch { /* fall through */ }
+  }
+  throw new Error('AI Gateway did not return valid JSON: ' + text.substring(0, 300));
 }
 
 // ── Image Generation ──────────────────────────────────────────
